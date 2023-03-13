@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Telegram</string>
+    <string name="camera">camera</string>
+    <string name="notif">Notifikasi Nonaktif</string>
+    <string name="icon_login">icon_login</string>
+    <string name="icon_dream">icon_dream</string>
+    <string name="send">send</string>
+    <string name="share">share</string>
+    <string name="favourites">favourites</string>
+    <string name="downloads">downloads</string>
+    <string name="logout">logout</string>
+    <string name="time">time</string>
+    <string name="subscribe">subscribe</string>
+    <string name="display">display</string>
+    <string name="location">location</string>
+    <string name="accounts">accounts</string>
+    <string name="languages">languages</string>
+    <string name="arrow_rights">arrow_rights</string>
+    <string name="filter_list">Saring Daftar</string>
+    <string name="search">Cari</string>
+    <string name="icon_bottom">Ikon Bawah</string>
+    <string name="icon_more">Ikon Lain</string>
+    <string name="profil">Profil Foto</string>
+    <string name="label_username">Nama Pengguna</string>
+    <string name="label_password">Password Pengguna</string>
+    <string name="label_first">Nama Depan</string>
+    <string name="label_last">Nama Belakang</string>
+    <string name="label_confirmation">Konfirmasi</string>
+    <string name="title_activity_sign">SignUpAktivitas</string>
+    <string name="message">Pesan</string>
+    <string name="grup">Grup</string>
+    <string name="channel">Saluran</string>
+    <string name="unread">Belum Dibaca</string>
+    <string name="all">Semua</string>
+    <string name="find">Cari Nomor Telepon ?</string>
+    <string name="add_contact">Tambahkan Kontak</string>
+    <!--    <string name="btn_login_title">Masuk</string>-->
+</resources>
