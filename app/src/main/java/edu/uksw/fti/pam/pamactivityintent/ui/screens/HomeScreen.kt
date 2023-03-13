@@ -217,7 +217,7 @@ fun All(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 if (vm.errorMessage != null){
-                    LazyColumn(modifier = Modifier.padding(15.dp)){
+                    LazyColumn(){
                         items(vm.toDoList.size) { index ->
                             Card(modifier = Modifier
                                 .padding(10.dp, 6.dp)
@@ -321,7 +321,7 @@ fun All(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 if (vm2.errorMessage != null){
-                    LazyColumn(modifier = Modifier.padding(15.dp)){
+                    LazyColumn(){
                         items(vm2.GroupList.size) { index ->
                             Card(modifier = Modifier
                                 .padding(10.dp, 6.dp)
@@ -458,7 +458,7 @@ fun Messages(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 if (vm.errorMessage != null){
-                    LazyColumn(modifier = Modifier.padding(15.dp)){
+                    LazyColumn(){
                         items(vm.toDoList.size) { index ->
                             Card(modifier = Modifier
                                 .padding(10.dp, 6.dp)
@@ -591,7 +591,7 @@ fun Group( vm: TodosViewModel,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 if (vm2.errorMessage != null){
-                    LazyColumn(modifier = Modifier.padding(15.dp)){
+                    LazyColumn(){
                         items(vm2.GroupList.size) { index ->
                             Card(modifier = Modifier
                                 .padding(10.dp, 6.dp)
