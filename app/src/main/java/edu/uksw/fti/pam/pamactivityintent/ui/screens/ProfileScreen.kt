@@ -3,6 +3,7 @@ package edu.uksw.fti.pam.pamactivityintent.ui.screens
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -12,6 +13,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -74,6 +76,21 @@ fun ProfileScreen() {
         imageUri = uri
     }
 
+    var lContext = LocalContext.current
+    var takenImage by remember {
+        mutableStateOf(
+            BitmapFactory.decodeResource(lContext.resources,R.drawable.person_2).asImageBitmap()
+        )
+    }
+
+    val takePictureContract = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview(),
+        onResult = {_takenImageBitmap ->
+            if (_takenImageBitmap != null) {
+                takenImage = _takenImageBitmap.asImageBitmap()
+            }
+        })
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -89,28 +106,21 @@ fun ProfileScreen() {
                 .padding(start = 15.dp, top = 10.dp)
         ) {//
             Column() {
-                Button(onClick = {
-                    launcher.launch("image/*")
-                }) {
-                    imageUri?.let {
-                        if (Build.VERSION.SDK_INT < 28) {
-                            bitmap.value = MediaStore.Images
-                                .Media.getBitmap(context.contentResolver, it)
-
-                        } else {
-                            val source = ImageDecoder
-                                .createSource(context.contentResolver, it)
-                            bitmap.value = ImageDecoder.decodeBitmap(source)
-                        }
-
-                        bitmap.value?.let { btm ->
+                Button(onClick = {}) {
+                    Column(modifier = Modifier.padding(4.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
                             Image(
-                                bitmap = btm.asImageBitmap(),
-                                contentDescription = stringResource(id = R.string.profil),
+                                bitmap = takenImage,
+                                contentDescription = "",
                                 modifier = Modifier
-                                    .padding(top = 5.dp)
-                                    .size(80.dp)
-                                    .clip(shape = RoundedCornerShape(80.dp))
+                                    .size(100.dp)
+                                    .padding(end = 4.dp)
+                                    .clickable {
+                                        takePictureContract.launch()
+                                    }
                             )
                         }
                     }
@@ -165,12 +175,12 @@ fun ProfileScreen() {
         )
         Text(
             modifier = Modifier
-                .padding(start = 275.dp, top = 30.dp),
+                .padding(start = 255.dp, top = 30.dp),
             text = " "
         )
         Text(
             modifier = Modifier
-                .padding(start = 280.dp, top = 30.dp),
+                .padding(start = 265.dp, top = 30.dp),
             text = savedLast.value!!,
             fontSize = 16.sp,
             fontFamily = FontFamily.SansSerif,
@@ -186,25 +196,38 @@ fun ProfileScreen() {
             fontWeight = FontWeight.Normal,
             color = Color.White,
         )
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+
+        Row(
             modifier = Modifier
-                .padding(top = 68.dp, end = 30.dp)
+                .padding(top = 99.dp, end = 10.dp)
+                .width(400.dp),
+            horizontalArrangement = Arrangement.End
         ) {
-            Row(
+            Button(
                 modifier = Modifier
-                    .width(400.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.baseline_mode_edit_24),
-                    contentDescription = stringResource(id = R.string.share),
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(25.dp)
-                        .padding(start = 6.dp, top = 2.dp)
+                    .width(164.dp)
+                    .height(44.dp)
+                    .padding(top = 8.dp, start = 6.dp, end = 10.dp),
+                colors = ButtonDefaults.buttonColors(Color.White),
+                onClick = {},
+                shape = RoundedCornerShape(8.dp)
+            )
+            {
+                Text(
+                    text = "Edit My Profil",
+                    fontSize = 12.sp,
+                    color = Color(0xff36a8eb),
+                    fontWeight = FontWeight.Bold
                 )
             }
+            Icon(
+                painter = painterResource(R.drawable.baseline_mode_edit_24),
+                contentDescription = stringResource(id = R.string.share),
+                tint = Color.White,
+                modifier = Modifier
+                    .size(36.dp)
+                    .padding(top = 14.dp, end = 8.dp)
+            )
         }
     }
 

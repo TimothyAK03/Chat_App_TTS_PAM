@@ -219,6 +219,7 @@ fun MainScreen(btnOnClickAction: (String?) -> Unit) {
             onValueChange = { cPassword = it },
             label = { Text(text = stringResource(R.string.label_confirmation)) },
             modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation(),
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color(0xff36a8eb),

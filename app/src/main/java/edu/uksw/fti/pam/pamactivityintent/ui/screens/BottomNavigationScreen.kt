@@ -23,7 +23,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import edu.uksw.fti.pam.pamactivityintent.CameraActivity
 import edu.uksw.fti.pam.pamactivityintent.R
 import edu.uksw.fti.pam.pamactivityintent.models.GroupViewModel
 import edu.uksw.fti.pam.pamactivityintent.models.TodosViewModel
@@ -48,9 +47,6 @@ fun NavigationGraph(
         composable(BottomNavItems.Profile.screen_route) {
             ProfileScreen()
         }
-        composable(BottomNavItems.Camera.screen_route) {
-            camButton()
-        }
     }
 }
 
@@ -62,7 +58,6 @@ fun BottomNavigation(
         BottomNavItems.Home,
         BottomNavItems.Contact,
         BottomNavItems.Profile,
-        BottomNavItems.Camera
     )
     Column(
 //        modifier = Modifier

@@ -2,7 +2,7 @@ package edu.uksw.fti.pam.pamactivityintent.models
 
 import com.google.gson.annotations.SerializedName
 
-data class GroupModel(
+data class GroupModel(  
 
     @SerializedName("id")
     var id: Int,

@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import edu.uksw.fti.pam.pamactivityintent.repositories.JSONPlaceholderTypicodeRepository
 import kotlinx.coroutines.launch
 
-class GroupViewModel : ViewModel()  {
+class GroupViewModel : ViewModel()  {   
     private var _GroupList = mutableStateListOf<GroupModel>()
 
     var errorMessage : String by mutableStateOf("")
