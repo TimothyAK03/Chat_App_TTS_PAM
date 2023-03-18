@@ -1,6 +1,8 @@
 package edu.uksw.fti.pam.pamactivityintent.repositories
 
+import edu.uksw.fti.pam.pamactivityintent.models.GroupMessageModel
 import edu.uksw.fti.pam.pamactivityintent.models.GroupModel
+import edu.uksw.fti.pam.pamactivityintent.models.MessageModel
 import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -12,6 +14,12 @@ interface JSONPlaceholderTypicodeRepository {
 
     @GET("group")
     suspend fun getGroup():List<GroupModel>
+
+    @GET("Message")
+    suspend fun getMessage():List<MessageModel>
+
+    @GET("GroupMessage")
+    suspend fun getGroupMessage():List<GroupMessageModel>
 
     companion object{
         var _apiClient: JSONPlaceholderTypicodeRepository? = null

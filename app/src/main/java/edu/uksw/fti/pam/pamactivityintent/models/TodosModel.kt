@@ -18,4 +18,4 @@ data class TodosModel(
     var chat: String,
 
 
-    )
+    ): java.io.Serializable

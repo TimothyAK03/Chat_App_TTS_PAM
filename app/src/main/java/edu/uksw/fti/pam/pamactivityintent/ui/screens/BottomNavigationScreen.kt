@@ -25,21 +25,21 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import edu.uksw.fti.pam.pamactivityintent.R
 import edu.uksw.fti.pam.pamactivityintent.models.GroupViewModel
+import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
 import edu.uksw.fti.pam.pamactivityintent.models.TodosViewModel
 import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
 
 @Composable
 fun NavigationGraph(
-    navController: NavHostController
+    navController: NavHostController, navigateToProfile: (TodosModel) -> Unit
 ) {
     NavHost(
         navController = navController,
         startDestination = BottomNavItems.Home.screen_route
     ) {
-        val vm = TodosViewModel()
-        val vm2 = GroupViewModel()
+
         composable(BottomNavItems.Home.screen_route) {
-            HomeField(vm,vm2)
+            HomeField(navigateToProfile)
         }
         composable(BottomNavItems.Contact.screen_route) {
             ContactsScreen()
@@ -111,7 +111,7 @@ fun BottomNavigation(
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BottomNavigationMainScreenView(){
+fun BottomNavigationMainScreenView( navigateToProfile: (TodosModel) -> Unit){
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
@@ -120,6 +120,6 @@ fun BottomNavigationMainScreenView(){
             )
         }
     ) {
-        NavigationGraph(navController = navController)
+        NavigationGraph(navController = navController, navigateToProfile = navigateToProfile)
     }
 }
