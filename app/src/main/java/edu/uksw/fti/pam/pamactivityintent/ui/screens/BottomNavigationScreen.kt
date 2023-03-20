@@ -47,6 +47,9 @@ fun NavigationGraph(
         composable(BottomNavItems.Profile.screen_route) {
             ProfileScreen()
         }
+        composable(BottomNavItems.Camera.screen_route) {
+            CamButton()
+        }
     }
 }
 
@@ -58,6 +61,7 @@ fun BottomNavigation(
         BottomNavItems.Home,
         BottomNavItems.Contact,
         BottomNavItems.Profile,
+        BottomNavItems.Camera,
     )
     Column(
 //        modifier = Modifier

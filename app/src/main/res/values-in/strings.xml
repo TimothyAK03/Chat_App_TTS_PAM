@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Telegram</string>
+    <string name="app_name">Sentigram</string>
     <string name="camera">camera</string>
     <string name="notif">Notifikasi Nonaktif</string>
     <string name="icon_login">icon_login</string>

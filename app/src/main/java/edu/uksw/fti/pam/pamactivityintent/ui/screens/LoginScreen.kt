@@ -109,7 +109,7 @@ fun LoginForm(context : Context) {
     )
     {
         Text(
-            "TELEGRAM",
+            "SENTIGRAM",
             fontFamily = androidx.compose.ui.text.font.FontFamily.SansSerif,
             fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
             color = androidx.compose.ui.graphics.Color(0xff36a8eb),

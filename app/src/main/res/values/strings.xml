@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Telegram</string>
+    <string name="app_name">Sentigram</string>
     <string name="camera">camera</string>
     <string name="notif">Notification Disabled</string>
     <string name="icon_login">icon_login</string>

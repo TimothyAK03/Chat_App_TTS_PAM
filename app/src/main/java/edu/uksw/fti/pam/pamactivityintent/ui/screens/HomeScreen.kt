@@ -93,7 +93,7 @@ fun TopBar(){
                 modifier = Modifier.padding(start = 15.dp, end = 30.dp)
             )
             Text(
-                "Telegram",
+                "Sentigram",
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xff36a8eb),

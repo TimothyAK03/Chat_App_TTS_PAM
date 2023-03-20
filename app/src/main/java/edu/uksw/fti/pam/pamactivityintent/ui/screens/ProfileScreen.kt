@@ -30,6 +30,9 @@ import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
 import edu.uksw.fti.pam.pamactivityintent.DataStore.FirstName
 import edu.uksw.fti.pam.pamactivityintent.DataStore.LastName
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -41,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -51,6 +55,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import edu.uksw.fti.pam.pamactivityintent.models.AccountModel
 import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
 
@@ -62,34 +67,12 @@ fun ProfileScreen() {
     val savedFirst = dataStore.getFirst.collectAsState(initial = "")
     val savedLast = storeData.getLast.collectAsState(initial = "")
 
-    var imageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
-    val bitmap = remember {
-        mutableStateOf<Bitmap?>(null)
-    }
+    var selectImages by remember { mutableStateOf(listOf<Uri>()) }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract =
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        imageUri = uri
-    }
-
-    var lContext = LocalContext.current
-    var takenImage by remember {
-        mutableStateOf(
-            BitmapFactory.decodeResource(lContext.resources,R.drawable.person_2).asImageBitmap()
-        )
-    }
-
-    val takePictureContract = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview(),
-        onResult = {_takenImageBitmap ->
-            if (_takenImageBitmap != null) {
-                takenImage = _takenImageBitmap.asImageBitmap()
-            }
-        })
+    val galleryLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
+            selectImages = it
+        }
 
     Box(
         modifier = Modifier
@@ -103,51 +86,32 @@ fun ProfileScreen() {
     ) {
         Box(
             modifier = Modifier
-                .padding(start = 15.dp, top = 10.dp)
-        ) {//
-            Column() {
-                Button(onClick = {}) {
-                    Column(modifier = Modifier.padding(4.dp)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Image(
-                                bitmap = takenImage,
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .padding(end = 4.dp)
-                                    .clickable {
-                                        takePictureContract.launch()
-                                    }
-                            )
-                        }
-                    }
+                .padding(start = 15.dp, top = 10.dp, bottom = 10.dp)
+
+        ) {
+            LazyVerticalGrid(GridCells.Fixed(3)) {
+                items(selectImages) { uri ->
+                    Image(
+                        painter = rememberImagePainter(uri),
+                        contentScale = ContentScale.FillWidth,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(top = 10.dp, start = 15.dp)
+                            .size(120.dp)
+                            .clickable {galleryLauncher.launch("image/*")}
+                    )
+
                 }
             }
-
-            Box(
+            Icon(
+                painter = painterResource(R.drawable.camera),
+                contentDescription = stringResource(id = R.string.camera),
+                tint = Color.Yellow,
                 modifier = Modifier
-                    .size(32.dp)
-                    .clip(shape = CircleShape)
-                    .background(Color.White)
-                    .align(Alignment.BottomEnd)
-                    .border(
-                        width = 4.0.dp,
-                        color = Color(0xff36a8eb),
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.camera),
-                    contentDescription = stringResource(id = R.string.camera),
-                    tint = Color.Gray,
-                    modifier = Modifier
-                        .size(26.dp)
-                        .padding(start = 6.dp, top = 2.dp)
-                )
-            }
+                    .size(85.dp)
+                    .padding(start = 52.dp, top = 52.dp)
+                    .clickable {galleryLauncher.launch("image/*")}
+            )
         }
 //            Row(
 //                modifier = Modifier
