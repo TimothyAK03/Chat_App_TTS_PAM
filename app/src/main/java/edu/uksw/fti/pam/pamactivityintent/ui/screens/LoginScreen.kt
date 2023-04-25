@@ -1,105 +1,59 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
-import android.accounts.Account
 import android.content.Context
-import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults.buttonColors
-import androidx.compose.material.SnackbarDefaults.backgroundColor
-import androidx.compose.runtime.*
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import edu.uksw.fti.pam.pamactivityintent.HomeActivity
-import edu.uksw.fti.pam.pamactivityintent.contracts.SignUpContract
 import edu.uksw.fti.pam.pamactivityintent.R
-import edu.uksw.fti.pam.pamactivityintent.SignActivity
-import edu.uksw.fti.pam.pamactivityintent.models.AccountModel
-import edu.uksw.fti.pam.pamactivityintent.models.*
+import edu.uksw.fti.pam.pamactivityintent.contracts.SignUpContract
 import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
-import java.io.IOException
-import androidx.compose.foundation.lazy.LazyColumn
-
-
-//fun getAccountFromJSON(context: Context): List<AccountModel> {
-//    //pakai lateinit karena var jsonString tidak dapat dinit langsung ketika program berjalan, tapi ketika fungsi dipanggil
-//    lateinit var jsonString: String
-//    try {
-//        jsonString = context.assets.open("account/account.json")
-//            .bufferedReader()
-//            .use { it.readText() }
-//    } catch (ioException: IOException) {
-//        println("Error reading file: ${ioException.message}")
-//        return emptyList() // or return null
-//    }
-//
-//    val listAccount = object : TypeToken<List<AccountModel>>() {}.type
-//    return try {
-//        //GSOn memparsing, menggunakan method fromJson dari jsonString menjadi object listAccount dengan type list
-//        Gson().fromJson(jsonString, listAccount)
-//    } catch (exception: Exception) {
-//        println("Error parsing JSON: ${exception.message}")
-//        emptyList() // or return null
-//    }
-//}
-
-
-internal fun doAuth(
-    usernameInput: String,
-    passwordInput: String,
-    accountList: List<AccountModel>
-): Boolean {
-    for (account in accountList) {
-        println(account.username)
-        println(usernameInput)
-        println(account.password)
-        println(passwordInput)
-        if (usernameInput == account.username && passwordInput == account.password) {
-            return true
-        }
-    }
-    return false
-}
 
 
 @Composable
-fun LoginForm(context : Context) {
-    val JSONParser = JSONParser()
-    val lContext = LocalContext.current
+fun LoginForm(
+     onSignAction: (Context, String, String) -> Unit
+) {
+
     var usernameInput by remember { mutableStateOf("") }
     var passwordInput by remember { mutableStateOf("") }
+    var context = LocalContext.current
 
     val getUsernameFromSignedUpForm = rememberLauncherForActivityResult(
         contract = SignUpContract(),
         onResult = { usernameInput = it!! }
     )
-    val accountList : List<AccountModel> = JSONParser.getAccountFromJSON(lContext)
-    if (JSONParser.isEmpty(context)) {
-        for (account in accountList) {
-            JSONParser.appendJsonToFile(lContext, account)
-        }
-    }
-    else
-        println("[!] Sudah ada file berisi di account.json")
-
 
     Row(
         modifier = Modifier
@@ -111,8 +65,8 @@ fun LoginForm(context : Context) {
         Text(
             "SENTIGRAM",
             fontFamily = androidx.compose.ui.text.font.FontFamily.SansSerif,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-            color = androidx.compose.ui.graphics.Color(0xff36a8eb),
+            fontWeight = FontWeight.Bold,
+            color = Color(0xff36a8eb),
             fontSize = 36.sp
         )
     }
@@ -141,7 +95,7 @@ fun LoginForm(context : Context) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         OutlinedTextField(
-            value = usernameInput.toString(),
+            value = usernameInput,
             onValueChange = { usernameInput = it },
             label = { Text(text = stringResource(R.string.label_username)) },
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -150,12 +104,9 @@ fun LoginForm(context : Context) {
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp)
-
-//                keyboardOptions = KeyboardOptions(
-//                    keyboardType = KeyboardType.Number
         )
         OutlinedTextField(
-            value = passwordInput.toString(),
+            value = passwordInput,
             onValueChange = { passwordInput = it },
             label = { Text(text = stringResource(R.string.label_password)) },
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -175,16 +126,7 @@ fun LoginForm(context : Context) {
                 .padding(top = 12.dp),
             colors = buttonColors(Color(0xff36a8eb)),
             onClick = {
-
-                val accountList: List<AccountModel> = JSONParser.getAccountFromFile(context)
-                println("Account List: $accountList")
-                val isAuthtenticated = doAuth(usernameInput, passwordInput, accountList)
-                if (isAuthtenticated) {
-                    lContext.startActivity(
-                        Intent(lContext, HomeActivity::class.java)
-                            .apply { putExtra("username", usernameInput) }
-                    )
-                }
+                onSignAction(context,usernameInput, passwordInput)
             },
             shape = RoundedCornerShape(8.dp)
         )
@@ -212,8 +154,6 @@ fun LoginForm(context : Context) {
                 modifier = Modifier
                     .clickable(
                         onClick = {
-//                        lContext.startActivity(
-//                            Intent(lContext, SignActivity::class.java)
                             getUsernameFromSignedUpForm.launch("")
                         }
                     )
@@ -221,28 +161,6 @@ fun LoginForm(context : Context) {
         }
     }
 }
-
-
-//            Button(
-//                modifier = Modifier,
-//                colors = buttonColors(Color(0xff36a8eb)),
-//                    onClick = {
-////                        lContext.startActivity(
-////                            Intent(lContext, SignActivity::class.java)
-//                    getUsernameFromSignedUpForm.launch("")
-//                },
-//            )
-//            {
-//                Text(
-//                    text = "SIGN UP",
-//                    fontSize = 16.sp,
-//                    color = Color.White,
-//                    fontWeight = FontWeight.Normal
-//                )
-//            }
-//        }
-
-
 
 
 @Preview(showBackground = true)

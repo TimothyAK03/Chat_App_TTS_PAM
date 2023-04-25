@@ -31,12 +31,6 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview3() {
-//    PAMActivityIntentTheme {
-//        BottomNavigationMainScreenView()
-//    }
-//}
+
 
 
