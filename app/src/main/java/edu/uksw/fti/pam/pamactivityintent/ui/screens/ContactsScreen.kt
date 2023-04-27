@@ -1,15 +1,21 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,21 +24,178 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import edu.uksw.fti.pam.pamactivityintent.models.ContactsViewModel
-import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
+import coil.compose.rememberImagePainter
+import coil.size.Scale
+import coil.transform.CircleCropTransformation
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import edu.uksw.fti.pam.pamactivityintent.ChatActivity
 import edu.uksw.fti.pam.pamactivityintent.R
+import edu.uksw.fti.pam.pamactivityintent.models.ContactModel
+import edu.uksw.fti.pam.pamactivityintent.models.ContactViewModel
+import edu.uksw.fti.pam.pamactivityintent.models.GroupModel
+import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
+import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
+import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
+
+fun AddtoFstore(){
+
+}
+@Composable
+fun Navigation(){
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = ContactItems.ContactScreen.route) {
+        composable(route = ContactItems.ContactScreen.route){
+
+        }
+    }
+}
 
 @Composable
-fun ContactsScreen() {
-    val vm = ContactsViewModel()
+fun DetailScreen(nama: String?){
+    Box( modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+        ) {
+        Text(text = "Hello, $nama")
+    }
+
+}
+
+@Composable
+fun AddContact(navController: NavController){
+    var firstNameInput by remember { mutableStateOf("") }
+    var lastNameInput by remember { mutableStateOf("") }
+    var numberInput by remember { mutableStateOf("") }
+    var img by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 130.dp, start = 36.dp, end = 36.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 0.dp, top = 0.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        )
+        {
+            OutlinedTextField(
+                modifier = Modifier
+                    .width(140.dp),
+                value = firstNameInput,
+                label = { Text(text = stringResource(R.string.label_first)) },
+                onValueChange = { firstNameInput = it },
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color(0xff36a8eb),
+                    unfocusedBorderColor = Color.Gray)
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .padding(start = 0.dp, top = 0.dp),
+                value = lastNameInput,
+                label = { Text(text = stringResource(R.string.label_last)) },
+                onValueChange = { lastNameInput = it },
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color(0xff36a8eb),
+                    unfocusedBorderColor = Color.Gray)
+            )
+        }
+
+        OutlinedTextField(
+            value = numberInput,
+            onValueChange = { numberInput = it },
+            label = { Text(text = "Number") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xff36a8eb),
+                unfocusedBorderColor = Color.Gray)
+        )
+
+        OutlinedTextField(
+            value = img,
+            onValueChange = { img = it },
+            label = { Text(text = "Img")},
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xff36a8eb),
+                unfocusedBorderColor = Color.Gray)
+        )
+
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 0.dp)
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xff36a8eb)),
+            onClick = {
+
+                val fFirestore = Firebase.firestore
+
+                val data = hashMapOf(
+                    "firstName" to firstNameInput,
+                    "lastName" to lastNameInput,
+                    "number" to numberInput,
+                    "img" to img
+                )
+
+                fFirestore.collection("contact")
+                    .add(data)
+                    .addOnCompleteListener {task->
+                        if(task.isSuccessful){
+                            navController.navigate(BottomNavItems.Contact.screen_route)
+                        }
+
+
+                    }
+
+            }
+        )
+        {
+            // button text
+            Text(
+                text = "Save",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+
+            )
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+@Composable
+fun ContactsScreen(navController: NavController) {
+    val vm = ContactViewModel()
     LaunchedEffect(
         Unit,
         block = {
-            vm.getToDoList()
+            vm.getContactList()
         }
     )
     Column (
@@ -81,7 +244,9 @@ fun ContactsScreen() {
                 painter = painterResource(R.drawable.add),
                 contentDescription = null,
                 tint = Color.Gray,
-                modifier = Modifier.padding(start = 12.dp).size(20.dp)
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .size(20.dp)
             )
             Icon(
                 painter = painterResource(R.drawable.search),
@@ -93,75 +258,122 @@ fun ContactsScreen() {
                 painter = painterResource(R.drawable._dots),
                 contentDescription = null,
                 tint = Color.Gray,
-                modifier = Modifier.padding(start = 12.dp).size(20.dp)
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .size(20.dp)
             )
         }
-        if (vm.errorMessage.isEmpty()) {
-            LazyColumn(
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                //ngoding neng jero items, items ojo diapus,
-                //foto nganggo async image seko JSON ojo diapus, ganti ukuran mbek posisi wae
-                //text format e kudu koyo seng tk tulis nde ngisor
-                //nama depan, napa belakang mbek foto dideleh 1x wae, langsung muncul kabeh
-                items(vm.toDoList.size) { index ->
-                    //row dinggo barisi chat foto, mbek jeneng
-                    Row(
-                        modifier = Modifier
-                            .clip(shape = RoundedCornerShape(10.dp))
-                            .fillMaxWidth(0.9f)
-                            .fillMaxHeight(0.3f)
-                            .size(60.dp)
-                            .background(Color(0xFF5BB8EE)),
-                        horizontalArrangement = Arrangement.Start,
-                    ) {
 
-                        AsyncImage( // <--- foto kudu nganggo async image
-                            model = vm.toDoList[index].fotoProfil,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .padding(top = 10.dp, start = 10.dp)
-                                .clip(CircleShape)
-                                .width(40.dp)
-                                .height(40.dp), // <---- ganti2 wae neng modifier
-                        )
-                        Row(
-                            modifier = Modifier
-                                .padding(top = 16.dp, start = 12.dp)
-                        ) {
+        val cont = remember { vm.contactModelList }
+
+        LazyColumn( verticalArrangement = Arrangement.SpaceBetween) {
+            items(
+                items = cont,
+                itemContent = {
+                    if (it != null) {
+                        ContactListItem(contt = it)
+                    }
+                }
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding( end = 20.dp,bottom = 100.dp),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.End
+
+        ) {
+            FloatingActionButton(
+                onClick = { navController.navigate(ContactItems.AddScreen.route)},
+                backgroundColor = Color(0xFF5BB8EE),
+                contentColor = Color.White
+            ) {
+                Icon(Icons.Filled.Add, "")
+            }
+        }
+
+    }
+}
+
+
+@Composable
+fun ContactListItem( contt: ContactModel) {
+    val lContext = LocalContext.current
+
+
+            Row(
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(10.dp))
+                    .fillMaxWidth(0.9f)
+                    .fillMaxHeight(0.3f)
+                    .size(60.dp)
+                    .background(Color(0xFF5BB8EE))
+                    .clickable {
+//                        lContext.startActivity(Intent(lContext, ChatActivity::class.java)
+//                            .apply {
+//                            putExtra("number", contt.number)
+//                        })
+                    },
+                horizontalArrangement = Arrangement.Start,
+            ) {
+
+                AsyncImage( // <--- foto kudu nganggo async image
+                    model = contt.img,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(top = 10.dp, start = 10.dp)
+                        .clip(CircleShape)
+                        .width(40.dp)
+                        .height(40.dp), // <---- ganti2 wae neng modifier
+                )
+                Row(
+                    modifier = Modifier
+                        .padding(top = 16.dp, start = 12.dp)
+                ) {
+
+                        contt.firstName?.let {
                             Text(
-                                text = vm.toDoList[index].namaDepan,
+                                text = it,
                                 fontSize = 18.sp,
                                 color = Color.White,
-                                fontWeight = FontWeight.Normal )//<-- ngetext format e ngene
-                            Text(
-                                modifier = Modifier
-                                    .padding(start = 5.dp),
-                                text = vm.toDoList[index].namaBelakang,
-                                fontSize = 18.sp,
-                                color = Color.White,
-                                fontWeight = FontWeight.Normal)
+                                fontWeight = FontWeight.Normal )
                         }
 
+                        contt.lastName?.let {
+                        Text(
+                            modifier = Modifier
+                                .padding(start = 5.dp),
+                            text = it,
+                            fontSize = 18.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Normal )
                     }
-                    Spacer(modifier = Modifier
-                        .height(20.dp)
-                        .padding(20.dp))
+
+
+                    //<-- ngetext format e ngene
+
+
                 }
+
             }
 
-        } else {
-            Text(text = vm.errorMessage)
-        }
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview4(){
-    PAMActivityIntentTheme {
-        ContactsScreen()
-    }
+            Spacer(modifier = Modifier
+                .height(20.dp)
+                .padding(20.dp))
+
+
+
+
 }
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview4(){
+//    PAMActivityIntentTheme {
+//        ContactsScreen()
+//    }
+//}
 

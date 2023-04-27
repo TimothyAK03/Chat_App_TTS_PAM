@@ -19,30 +19,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import edu.uksw.fti.pam.pamactivityintent.R
+import edu.uksw.fti.pam.pamactivityintent.models.ContactModel
 import edu.uksw.fti.pam.pamactivityintent.models.GroupViewModel
 import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
 import edu.uksw.fti.pam.pamactivityintent.models.TodosViewModel
 import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
+import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
 
 @Composable
 fun NavigationGraph(
-    navController: NavHostController, navigateToProfile: (TodosModel) -> Unit
+    navController: NavHostController, navigateToProfile: (TodosModel) -> Unit,
 ) {
     NavHost(
         navController = navController,
         startDestination = BottomNavItems.Home.screen_route
+
     ) {
 
         composable(BottomNavItems.Home.screen_route) {
             HomeField(navigateToProfile)
         }
-        composable(BottomNavItems.Contact.screen_route) {
-            ContactsScreen()
+        composable(route = BottomNavItems.Contact.screen_route) {
+            ContactsScreen(navController = navController)
         }
         composable(BottomNavItems.Profile.screen_route) {
             ProfileScreen()
@@ -50,8 +55,17 @@ fun NavigationGraph(
         composable(BottomNavItems.Camera.screen_route) {
             CamButton()
         }
+
+        composable(
+            route = ContactItems.AddScreen.route ,
+        ) {
+            AddContact(navController = navController)
+        }
+
     }
 }
+
+
 
 @Composable
 fun BottomNavigation(

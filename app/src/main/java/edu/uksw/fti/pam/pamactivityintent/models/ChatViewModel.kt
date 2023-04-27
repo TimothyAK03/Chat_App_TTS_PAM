@@ -11,26 +11,25 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
-class ContactViewModel : ViewModel() {
-
-private var _contactModelList= mutableStateListOf<ContactModel?>()
+class ChatViewModel : ViewModel() {
+    private var _chatModelList= mutableStateListOf<ChatModel?>()
 
     var errorMessage: String by mutableStateOf("")
-    val contactModelList: SnapshotStateList<ContactModel?>
-        get() = _contactModelList
+    val chatModelList: SnapshotStateList<ChatModel?>
+        get() = _chatModelList
 
-    fun getContactList() {
+    fun getContactList(name: String) {
         viewModelScope.launch{
             val db = Firebase.firestore
             try {
-                val docRef = db.collection("contact")
+                val docRef = db.collection("chat_$name")
                 docRef.get()
                     .addOnSuccessListener { queryDocumentSnapshots ->
                         if (queryDocumentSnapshots != null) {
                             val list = queryDocumentSnapshots.documents
                             for (d in list) {
-                                val c: ContactModel? = d.toObject(ContactModel::class.java)
-                                _contactModelList.add(c)
+                                val c: ChatModel? = d.toObject(ChatModel::class.java)
+                                _chatModelList.add(c)
                             }
                         }
                     }
