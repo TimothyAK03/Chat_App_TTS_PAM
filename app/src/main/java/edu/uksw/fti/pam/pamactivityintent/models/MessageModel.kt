@@ -5,7 +5,7 @@ import com.google.firebase.firestore.PropertyName
 
 data class MessageModel(
     var message: String? = null,
-//    var isPeer: String? = null,
+    var userID: String? = null,
     var isPeer: Boolean? = null
 )
 

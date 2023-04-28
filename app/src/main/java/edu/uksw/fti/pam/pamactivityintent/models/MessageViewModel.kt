@@ -14,6 +14,7 @@ import com.google.firebase.firestore.PropertyName
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.type.DateTime
 import edu.uksw.fti.pam.pamactivityintent.models.MessageModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -24,7 +25,7 @@ class MessageViewModel : ViewModel() {
     val messageList: SnapshotStateList<MessageModel?>
         get() = _messageList
 
-    private val user = Firebase.auth.currentUser
+    val user = Firebase.auth.currentUser
     private val db = Firebase.firestore
     private val docRef = db.collection("chats")
 
@@ -45,7 +46,7 @@ class MessageViewModel : ViewModel() {
     }
     @RequiresApi(Build.VERSION_CODES.O)
     fun addMessage(message: MessageModel) {
-        docRef.document(user?.uid!!)
+        docRef.document(LocalDateTime.now().toString())
             .set(message)
     }
 

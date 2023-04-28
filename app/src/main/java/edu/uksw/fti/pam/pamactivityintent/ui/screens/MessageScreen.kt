@@ -117,12 +117,13 @@ fun MessageTopBar(chatt: TodosModel) {
 fun MessageList(messageVM: MessageViewModel) {
 
     val listMessage =  remember { messageVM.messageList }
+    val currentUser = messageVM.user
     LazyColumn () {
         items(
             items = listMessage,
             itemContent = {
                 if (it != null) {
-                    if (it.isPeer == true)
+                    if (it.userID == currentUser?.uid)
                         UserBubble(message = it)
                     else
                         PeerBubble(message = it)
@@ -209,8 +210,10 @@ fun MessageBox(messageVM: MessageViewModel) {
             )
             Spacer(modifier = Modifier.size(12.dp))
             FloatingActionButton(onClick = {
+                val currentUser = messageVM.user
                 val newMessage = MessageModel(
                     message = textState,
+                    userID = currentUser?.uid!!,
                     isPeer = true,
                 )
                 messageVM.addMessage(newMessage)
