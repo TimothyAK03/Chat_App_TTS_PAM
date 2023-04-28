@@ -1,11 +1,11 @@
 package edu.uksw.fti.pam.pamactivityintent.models
 
-import com.google.gson.annotations.SerializedName
+import com.google.firebase.firestore.PropertyName
+
 
 data class MessageModel(
-    @SerializedName("message")
-    var message: String,
-
-    @SerializedName("isPeer")
-    var isPeer: Boolean,
+    var message: String? = null,
+    var isPeer: String? = null,
+    var test: Boolean? = null
 )
+

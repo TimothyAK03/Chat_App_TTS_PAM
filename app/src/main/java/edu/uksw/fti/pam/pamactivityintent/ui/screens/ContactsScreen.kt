@@ -298,11 +298,10 @@ fun ContactsScreen(navController: NavController) {
 }
 
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun ContactListItem( contt: ContactModel) {
     val lContext = LocalContext.current
-
-
             Row(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(10.dp))
@@ -311,10 +310,6 @@ fun ContactListItem( contt: ContactModel) {
                     .size(60.dp)
                     .background(Color(0xFF5BB8EE))
                     .clickable {
-//                        lContext.startActivity(Intent(lContext, ChatActivity::class.java)
-//                            .apply {
-//                            putExtra("number", contt.number)
-//                        })
                     },
                 horizontalArrangement = Arrangement.Start,
             ) {
@@ -351,11 +346,6 @@ fun ContactListItem( contt: ContactModel) {
                             color = Color.White,
                             fontWeight = FontWeight.Normal )
                     }
-
-
-                    //<-- ngetext format e ngene
-
-
                 }
 
             }

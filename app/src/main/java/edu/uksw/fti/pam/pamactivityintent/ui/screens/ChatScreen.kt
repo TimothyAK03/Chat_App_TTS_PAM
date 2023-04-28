@@ -1,11 +1,14 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,8 +18,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,9 +36,15 @@ import coil.compose.base.R
 import coil.compose.rememberImagePainter
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.models.MessageModel
 import edu.uksw.fti.pam.pamactivityintent.models.MessageViewModel
 import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
+import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 @Composable
@@ -121,18 +132,20 @@ fun MessageList() {
             vm3.getMessageList()
         }
     )
-    val listMessage = vm3.MessageList
+    val listMessage =  remember { vm3.messageList }
 
-    LazyColumn {
-        items(listMessage.size) {index ->
-            Spacer(modifier = Modifier.height(8.dp))
-            if(listMessage[index].isPeer) {
-                PeerBubble(listMessage[index])
-            } else {
-                UserBubble(listMessage[index])
+    LazyColumn () {
+        items(
+            items = listMessage,
+            itemContent = {
+                if (it != null) {
+                    if (it.test == true)
+                        UserBubble(message = it)
+                    else
+                        PeerBubble(message = it)
+                }
             }
-            Spacer(modifier = Modifier.height(32.dp))
-        }
+        )
     }
 }
 
@@ -147,13 +160,16 @@ fun UserBubble(message: MessageModel) {
     ) {
         Row(modifier = Modifier.padding(all = 10.dp)) {
             Column(modifier = Modifier.weight(3.0f, true)) {
-                Text(
-                    text = message.message,
-                    fontSize = 16.sp,
-                    color = Color.Black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                message.message?.let {
+                    Text(
+                        text = it,
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
             }
         }
     }
@@ -170,22 +186,27 @@ fun PeerBubble(message: MessageModel) {
     ) {
         Row(modifier = Modifier.padding(10.dp)) {
             Column(modifier = Modifier.weight(3.0f, true)) {
-                Text(
-                    text = message.message,
-                    fontSize = 16.sp,
-                    color = Color.Black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                message.message?.let {
+                    Text(
+                        text = it,
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MessageBox() {
 
-    val textState = remember { mutableStateOf(TextFieldValue()) }
+
+    var textState by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
 
     Box(Modifier.background(Color.Transparent)) {
@@ -194,22 +215,43 @@ fun MessageBox() {
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            BasicTextField(
-                value = textState.value,
-                modifier = Modifier.weight(1f, true)
+            TextField(
+                value = textState,
+                modifier = Modifier
+                    .weight(1f, true)
                     .background(color = Color(0Xff6db7e3), CircleShape)
                     .padding(18.dp)
 
                     ,
                 onValueChange = {
-                    textState.value = it
+                    textState = it
                 },
 
 
             )
+
+
             Spacer(modifier = Modifier.size(12.dp))
 
-            FloatingActionButton(onClick = { /*TODO*/ }) {
+            FloatingActionButton(onClick = {
+                val fFirestore = Firebase.firestore
+
+                val data = hashMapOf(
+                    "message" to textState,
+                    "test" to true,
+                )
+
+                fFirestore.collection("chats").document(LocalDateTime.now().toString())
+                    .set(data)
+                    .addOnCompleteListener {task->
+                        if(task.isSuccessful){
+
+                        }
+
+
+                    }
+            }
+            ) {
                 Icon(imageVector = Icons.Default.Send, contentDescription = null)
             }
         }
