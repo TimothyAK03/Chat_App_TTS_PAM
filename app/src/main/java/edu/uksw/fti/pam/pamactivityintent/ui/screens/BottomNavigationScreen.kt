@@ -55,7 +55,6 @@ fun NavigationGraph(
         composable(BottomNavItems.Camera.screen_route) {
             CamButton()
         }
-
         composable(
             route = ContactItems.AddScreen.route ,
         ) {

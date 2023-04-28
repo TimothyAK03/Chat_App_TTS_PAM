@@ -76,6 +76,7 @@ fun AddContact(navController: NavController){
     var lastNameInput by remember { mutableStateOf("") }
     var numberInput by remember { mutableStateOf("") }
     var img by remember { mutableStateOf("") }
+    val contactVM = remember { ContactViewModel() }
 
     Column(
         modifier = Modifier
@@ -144,25 +145,13 @@ fun AddContact(navController: NavController){
                 .height(50.dp),
             colors = ButtonDefaults.buttonColors(Color(0xff36a8eb)),
             onClick = {
-
-                val fFirestore = Firebase.firestore
-
-                val data = hashMapOf(
-                    "firstName" to firstNameInput,
-                    "lastName" to lastNameInput,
-                    "number" to numberInput,
-                    "img" to img
+                val newContact = ContactModel(
+                    firstName = firstNameInput,
+                    lastName = lastNameInput,
+                    number =  numberInput,
+                    img =  img
                 )
-
-                fFirestore.collection("contact")
-                    .add(data)
-                    .addOnCompleteListener {task->
-                        if(task.isSuccessful){
-                            navController.navigate(BottomNavItems.Contact.screen_route)
-                        }
-
-
-                    }
+                contactVM.AddNewContact(newContact, navController)
 
             }
         )
@@ -178,15 +167,6 @@ fun AddContact(navController: NavController){
         }
     }
 }
-
-
-
-
-
-
-
-
-
 
 
 @Composable
@@ -280,7 +260,7 @@ fun ContactsScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding( end = 20.dp,bottom = 100.dp),
+                .padding(end = 20.dp, bottom = 100.dp),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.End
 
@@ -301,62 +281,58 @@ fun ContactsScreen(navController: NavController) {
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun ContactListItem( contt: ContactModel) {
-    val lContext = LocalContext.current
-            Row(
-                modifier = Modifier
-                    .clip(shape = RoundedCornerShape(10.dp))
-                    .fillMaxWidth(0.9f)
-                    .fillMaxHeight(0.3f)
-                    .size(60.dp)
-                    .background(Color(0xFF5BB8EE))
-                    .clickable {
-                    },
-                horizontalArrangement = Arrangement.Start,
-            ) {
+    Row(
+        modifier = Modifier
+            .clip(shape = RoundedCornerShape(10.dp))
+            .fillMaxWidth(0.9f)
+            .fillMaxHeight(0.3f)
+            .size(60.dp)
+            .background(Color(0xFF5BB8EE))
+            .clickable {
+            },
+        horizontalArrangement = Arrangement.Start,
+    ) {
 
-                AsyncImage( // <--- foto kudu nganggo async image
-                    model = contt.img,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .padding(top = 10.dp, start = 10.dp)
-                        .clip(CircleShape)
-                        .width(40.dp)
-                        .height(40.dp), // <---- ganti2 wae neng modifier
-                )
-                Row(
-                    modifier = Modifier
-                        .padding(top = 16.dp, start = 12.dp)
-                ) {
+        AsyncImage( // <--- foto kudu nganggo async image
+            model = contt.img,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .padding(top = 10.dp, start = 10.dp)
+                .clip(CircleShape)
+                .width(40.dp)
+                .height(40.dp), // <---- ganti2 wae neng modifier
+        )
+        Row(
+            modifier = Modifier
+                .padding(top = 16.dp, start = 12.dp)
+        ) {
 
-                        contt.firstName?.let {
-                            Text(
-                                text = it,
-                                fontSize = 18.sp,
-                                color = Color.White,
-                                fontWeight = FontWeight.Normal )
-                        }
-
-                        contt.lastName?.let {
-                        Text(
-                            modifier = Modifier
-                                .padding(start = 5.dp),
-                            text = it,
-                            fontSize = 18.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Normal )
-                    }
+                contt.firstName?.let {
+                    Text(
+                        text = it,
+                        fontSize = 18.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.Normal )
                 }
 
+                contt.lastName?.let {
+                Text(
+                    modifier = Modifier
+                        .padding(start = 5.dp),
+                    text = it,
+                    fontSize = 18.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Normal )
             }
+        }
+
+    }
 
 
-            Spacer(modifier = Modifier
-                .height(20.dp)
-                .padding(20.dp))
-
-
-
+    Spacer(modifier = Modifier
+        .height(20.dp)
+        .padding(20.dp))
 
 }
 //@Preview(showBackground = true)

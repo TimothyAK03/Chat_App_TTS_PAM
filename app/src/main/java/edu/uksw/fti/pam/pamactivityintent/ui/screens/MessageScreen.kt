@@ -1,6 +1,5 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
-import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -9,10 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -27,39 +24,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.base.R
 import coil.compose.rememberImagePainter
-import coil.size.Scale
-import coil.transform.CircleCropTransformation
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.models.MessageModel
 import edu.uksw.fti.pam.pamactivityintent.models.MessageViewModel
 import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
-import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ChatScreen(chatt: TodosModel){
+    val messageVM = remember { MessageViewModel() }
+    LaunchedEffect(Unit) {
+        messageVM.startListeningForUpdates()
+    }
     Scaffold(
         backgroundColor = Color(0xFFEDEDED),
         topBar = { MessageTopBar(chatt = chatt) },
-        bottomBar = { MessageBox() },
+        bottomBar = { MessageBox(messageVM) },
         content = { padding ->
             Column(
                 modifier = Modifier.padding(padding)
             ) {
-                MessageList()
+                MessageList(messageVM)
             }
-             }
+        }
     )
 }
 
@@ -123,23 +114,15 @@ fun MessageTopBar(chatt: TodosModel) {
 }
 
 @Composable
-fun MessageList() {
-    val vm3 = MessageViewModel()
+fun MessageList(messageVM: MessageViewModel) {
 
-    LaunchedEffect(
-        Unit,
-        block = {
-            vm3.getMessageList()
-        }
-    )
-    val listMessage =  remember { vm3.messageList }
-
+    val listMessage =  remember { messageVM.messageList }
     LazyColumn () {
         items(
             items = listMessage,
             itemContent = {
                 if (it != null) {
-                    if (it.test == true)
+                    if (it.isPeer == true)
                         UserBubble(message = it)
                     else
                         PeerBubble(message = it)
@@ -203,11 +186,8 @@ fun PeerBubble(message: MessageModel) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MessageBox() {
-
-
+fun MessageBox(messageVM: MessageViewModel) {
     var textState by remember { mutableStateOf("") }
-    val scrollState = rememberScrollState()
 
     Box(Modifier.background(Color.Transparent)) {
         Row(
@@ -226,32 +206,15 @@ fun MessageBox() {
                 onValueChange = {
                     textState = it
                 },
-
-
             )
-
-
             Spacer(modifier = Modifier.size(12.dp))
-
             FloatingActionButton(onClick = {
-                val fFirestore = Firebase.firestore
-
-                val data = hashMapOf(
-                    "message" to textState,
-                    "test" to true,
+                val newMessage = MessageModel(
+                    message = textState,
+                    isPeer = true,
                 )
-
-                fFirestore.collection("chats").document(LocalDateTime.now().toString())
-                    .set(data)
-                    .addOnCompleteListener {task->
-                        if(task.isSuccessful){
-
-                        }
-
-
-                    }
-            }
-            ) {
+                messageVM.addMessage(newMessage)
+            })  {
                 Icon(imageVector = Icons.Default.Send, contentDescription = null)
             }
         }

@@ -7,13 +7,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
 import kotlinx.coroutines.launch
 
 class ContactViewModel : ViewModel() {
 
-private var _contactModelList= mutableStateListOf<ContactModel?>()
+    private var _contactModelList = mutableStateListOf<ContactModel?>()
+    private val db = Firebase.firestore
+    private val docRef = db.collection("contact")
 
     var errorMessage: String by mutableStateOf("")
     val contactModelList: SnapshotStateList<ContactModel?>
@@ -21,9 +25,7 @@ private var _contactModelList= mutableStateListOf<ContactModel?>()
 
     fun getContactList() {
         viewModelScope.launch{
-            val db = Firebase.firestore
             try {
-                val docRef = db.collection("contact")
                 docRef.get()
                     .addOnSuccessListener { queryDocumentSnapshots ->
                         if (queryDocumentSnapshots != null) {
@@ -39,6 +41,18 @@ private var _contactModelList= mutableStateListOf<ContactModel?>()
                 errorMessage = e.message!!
             }
         }
+    }
+    fun AddNewContact(Contact: ContactModel, navController: NavController) {
 
+        val fFirestore = Firebase.firestore
+        fFirestore.collection("contact")
+            .add(Contact)
+            .addOnCompleteListener {task->
+                if(task.isSuccessful){
+                    navController.navigate(BottomNavItems.Contact.screen_route)
+                }
+
+
+            }
     }
 }

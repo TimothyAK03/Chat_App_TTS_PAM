@@ -1,10 +1,14 @@
 package edu.uksw.fti.pam.pamactivityintent.models
 
+import android.os.Build
 import android.os.Message
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.PropertyName
 import com.google.firebase.firestore.ktx.firestore
@@ -13,11 +17,37 @@ import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.models.MessageModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDateTime
 
 class MessageViewModel : ViewModel() {
     private var _messageList = mutableStateListOf<MessageModel?>()
     val messageList: SnapshotStateList<MessageModel?>
         get() = _messageList
+
+    private val user = Firebase.auth.currentUser
+    private val db = Firebase.firestore
+    private val docRef = db.collection("chats")
+
+
+    fun startListeningForUpdates() {
+        docRef.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Log.e("Firestore", "Error getting chat updates: ", error)
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null) {
+                val messages = snapshot.toObjects(MessageModel::class.java)
+                _messageList.clear()
+                _messageList.addAll(messages)
+            }
+        }
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun addMessage(message: MessageModel) {
+        docRef.document(user?.uid!!)
+            .set(message)
+    }
 
     fun getMessageList() {
         viewModelScope.launch{
