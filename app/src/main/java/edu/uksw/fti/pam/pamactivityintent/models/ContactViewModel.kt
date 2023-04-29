@@ -52,7 +52,7 @@ class ContactViewModel : ViewModel() {
 
 
         val fFirestore = Firebase.firestore
-        fFirestore.collection("contact")
+        fFirestore.collection("users")
             .add(Contact)
             .addOnCompleteListener {task->
                 if(task.isSuccessful){
