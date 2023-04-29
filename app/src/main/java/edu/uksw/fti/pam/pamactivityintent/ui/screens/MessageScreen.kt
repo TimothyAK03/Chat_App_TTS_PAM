@@ -28,18 +28,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import edu.uksw.fti.pam.pamactivityintent.models.ContactModel
+import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
 import edu.uksw.fti.pam.pamactivityintent.models.MessageModel
 import edu.uksw.fti.pam.pamactivityintent.models.MessageViewModel
-import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ChatScreen(chatt: ContactModel){
+fun ChatScreen(chatt: GroupsModel){
     val messageVM = remember { MessageViewModel() }
     LaunchedEffect(Unit) {
-        messageVM.startListeningForUpdates(chatt.number!!)
+        messageVM.startListeningForUpdates(chatt.GroupName!!)
     }
     Scaffold(
         backgroundColor = Color(0xFFEDEDED),
@@ -58,14 +57,12 @@ fun ChatScreen(chatt: ContactModel){
 
 
 @Composable
-fun MessageTopBar(chatt: ContactModel) {
+fun MessageTopBar(chatt: GroupsModel) {
     TopAppBar(
         title = {
             Column(Modifier.padding(start = 16.dp)) {
-                Row() {
-                    Text(chatt.firstName!!, fontSize = 17.sp)
-                    Text(chatt.lastName!!, fontSize = 17.sp, modifier = Modifier.padding(start = 5.dp))
-                }
+                Text(chatt.GroupName!!, fontSize = 17.sp)
+                Text(chatt.GroupDescription!!, fontSize = 13.sp)
 
 
             }
@@ -192,7 +189,7 @@ fun PeerBubble(message: MessageModel) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MessageBox(messageVM: MessageViewModel, chatt: ContactModel) {
+fun MessageBox(messageVM: MessageViewModel, chatt: GroupsModel) {
     var textState by remember { mutableStateOf("") }
 
     Box(Modifier.background(Color.Transparent)) {
@@ -221,7 +218,7 @@ fun MessageBox(messageVM: MessageViewModel, chatt: ContactModel) {
                     userID = currentUser?.uid!!,
                     isPeer = true,
                 )
-                messageVM.addMessage(newMessage,chatt.number!!)
+                messageVM.addMessage(newMessage,chatt.GroupName!!)
             })  {
                 Icon(imageVector = Icons.Default.Send, contentDescription = null)
             }

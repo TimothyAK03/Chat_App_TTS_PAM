@@ -9,7 +9,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,11 +21,10 @@ import coil.compose.base.R
 import coil.compose.rememberImagePainter
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
-import edu.uksw.fti.pam.pamactivityintent.models.ContactModel
-import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
+import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
 
 @Composable
-fun ChatListItem(chatt: ContactModel, navigateToProfile: (ContactModel) -> Unit){
+fun ChatListItem(chatt: GroupsModel, navigateToProfile: (GroupsModel) -> Unit){
 
 
     Card(modifier = Modifier
@@ -42,6 +40,7 @@ fun ChatListItem(chatt: ContactModel, navigateToProfile: (ContactModel) -> Unit)
                     .padding(4.dp)
                     .fillMaxSize()
             ) {
+
                 Image(
                     painter = rememberImagePainter(data = chatt.img,
                         builder = {
@@ -59,29 +58,24 @@ fun ChatListItem(chatt: ContactModel, navigateToProfile: (ContactModel) -> Unit)
                         .fillMaxHeight()
                         .weight(0.8f))
                 {
-                    Row() {
-                        Text(text = chatt.firstName!!,
+                    chatt.GroupName?.let {
+                        Text(text = it,
                             fontSize = 16.sp,
-                            color = Color(0xff2d8bc2),
-                            fontWeight = FontWeight.Bold
-
-                        )
-                        Text(text = chatt.lastName!!,
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .padding(start = 5.dp),
                             color = Color(0xff2d8bc2),
                             fontWeight = FontWeight.Bold
 
                         )
                     }
 
-                    Text(text = "Start a conversation",
-                        fontSize = 12.sp,
-                        color = Color(0xff2d8bc2),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+
+                    chatt.GroupDescription?.let {
+                        Text(text = it,
+                            fontSize = 12.sp,
+                            color = Color(0xff2d8bc2),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
 
                 Column(

@@ -10,17 +10,15 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
-import edu.uksw.fti.pam.pamactivityintent.models.ContactModel
-import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
+import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
 import edu.uksw.fti.pam.pamactivityintent.ui.screens.ChatScreen
 import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
 
 class ChatActivity : ComponentActivity() {
 
-    private val chatt: ContactModel by lazy {
-        intent?.getSerializableExtra(CHAT_ID) as ContactModel
+    private val chatt: GroupsModel by lazy {
+        intent?.getSerializableExtra(CHAT_ID) as GroupsModel
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -41,7 +39,7 @@ class ChatActivity : ComponentActivity() {
     }
     companion object {
         private const val CHAT_ID = "chat_id"
-        fun newIntent(context: Context, chatt: ContactModel) =
+        fun newIntent(context: Context, chatt: GroupsModel) =
             Intent(context, ChatActivity::class.java).apply {
                 putExtra(CHAT_ID,chatt)
             }

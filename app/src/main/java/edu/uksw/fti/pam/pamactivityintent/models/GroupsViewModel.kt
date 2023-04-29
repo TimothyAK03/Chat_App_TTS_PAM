@@ -14,15 +14,15 @@ import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
 import kotlinx.coroutines.launch
 
-class ContactViewModel : ViewModel() {
+class GroupsViewModel : ViewModel() {
     val user = Firebase.auth.currentUser
-    private var _contactModelList = mutableStateListOf<ContactModel?>()
+    private var _groupsModelList = mutableStateListOf<GroupsModel?>()
     private val db = Firebase.firestore
-    private val docRef = db.collection("users")
+    private val docRef = db.collection("Group")
 
     var errorMessage: String by mutableStateOf("")
-    val contactModelList: SnapshotStateList<ContactModel?>
-        get() = _contactModelList
+    val groupsModelList: SnapshotStateList<GroupsModel?>
+        get() = _groupsModelList
 
     fun getContactList() {
         viewModelScope.launch{
@@ -34,8 +34,8 @@ class ContactViewModel : ViewModel() {
 
                             val list = queryDocumentSnapshots.documents
                             for (d in list) {
-                                val c: ContactModel? = d.toObject(ContactModel::class.java)
-                                _contactModelList.add(c)
+                                val c: GroupsModel? = d.toObject(GroupsModel::class.java)
+                                _groupsModelList.add(c)
                             }
                         }
                     }
@@ -45,19 +45,18 @@ class ContactViewModel : ViewModel() {
             }
         }
     }
-    fun AddNewContact(Contact: ContactModel, navController: NavController) {
+    fun AddNewContact(Group: GroupsModel, navController: NavController) {
 
 
         val auth = Firebase.auth
 
 
         val fFirestore = Firebase.firestore
-        fFirestore.collection("users")
-            .add(Contact)
+        fFirestore.collection("Group")
+            .add(Group)
             .addOnCompleteListener {task->
                 if(task.isSuccessful){
-                    auth.createUserWithEmailAndPassword(Contact.firstName+Contact.lastName!!, Contact.number!!)
-                    navController.navigate(BottomNavItems.Contact.screen_route)
+                    navController.navigate(BottomNavItems.Group.screen_route)
                 }
 
 

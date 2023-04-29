@@ -2,50 +2,28 @@ package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import edu.uksw.fti.pam.pamactivityintent.R
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.util.DisplayMetrics
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
-import coil.size.Scale
-import coil.transform.CircleCropTransformation
 import com.google.accompanist.pager.*
 import edu.uksw.fti.pam.pamactivityintent.models.*
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
-import kotlin.math.roundToInt
-import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
 import kotlinx.coroutines.launch
 
 
@@ -55,7 +33,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
 @Composable
 fun HomeField(
-    navigateToProfile: (ContactModel) -> Unit
+    navigateToProfile: (GroupsModel) -> Unit
 ) {
 
 
@@ -120,7 +98,7 @@ fun TopBar(){
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TabScreen(navigateToProfile: (ContactModel) -> Unit){
+fun TabScreen(navigateToProfile: (GroupsModel) -> Unit){
     val pagerState = rememberPagerState(pageCount = 3)
 
     Column (modifier = Modifier.background(Color.White)) {
@@ -169,12 +147,12 @@ fun Tabs(pagerState: PagerState){
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TabsContent(pagerState: PagerState, navigateToProfile: (ContactModel) -> Unit){
+fun TabsContent(pagerState: PagerState, navigateToProfile: (GroupsModel) -> Unit){
 
     HorizontalPager(state = pagerState) {page ->
         when (page){
-            0-> All(vm = ContactViewModel(), vm2 = GroupViewModel(), navigateToProfile = navigateToProfile)
-            1-> Messages(vm = ContactViewModel() , vm2 = GroupViewModel(), navigateToProfile = navigateToProfile)
+            0-> All(vm = GroupsViewModel(), vm2 = GroupViewModel(), navigateToProfile = navigateToProfile)
+            1-> Messages(vm = GroupsViewModel() , vm2 = GroupViewModel(), navigateToProfile = navigateToProfile)
             2-> Group(vm = TodosViewModel(), vm2 = GroupViewModel())
         }
     }
@@ -184,8 +162,8 @@ fun TabsContent(pagerState: PagerState, navigateToProfile: (ContactModel) -> Uni
 
 @Composable
 fun All(
-    vm: ContactViewModel,
-    vm2: GroupViewModel, navigateToProfile: (ContactModel) -> Unit)
+    vm: GroupsViewModel,
+    vm2: GroupViewModel, navigateToProfile: (GroupsModel) -> Unit)
 {
     val displayMetrics = DisplayMetrics()
     val height = (displayMetrics.heightPixels / displayMetrics.density) - 150;
@@ -234,7 +212,7 @@ fun All(
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                val chat = remember { vm.contactModelList }
+                val chat = remember { vm.groupsModelList }
 
                     LazyColumn() {
                         items(
@@ -293,8 +271,8 @@ fun All(
 
 @Composable
 fun Messages(
-    vm: ContactViewModel,
-    vm2: GroupViewModel,navigateToProfile: (ContactModel) -> Unit)
+    vm: GroupsViewModel,
+    vm2: GroupViewModel, navigateToProfile: (GroupsModel) -> Unit)
 {
     val displayMetrics = DisplayMetrics()
     val height = (displayMetrics.heightPixels / displayMetrics.density) - 150;
@@ -343,7 +321,7 @@ fun Messages(
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                val chat = remember { vm.contactModelList }
+                val chat = remember { vm.groupsModelList }
 
                 LazyColumn() {
                     items(

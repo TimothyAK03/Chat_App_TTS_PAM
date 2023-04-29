@@ -29,9 +29,12 @@
     <string name="title_activity_sign">SingUpActivity</string>
     <string name="message">Messages</string>
     <string name="grup">Group</string>
+    <string name="grupName">Group Name</string>
+    <string name="grupDesc">Group Description</string>
     <string name="number">Number</string>
     <string name="channel">Channels</string>
     <string name="unread">Unread</string>
+
     <string name="all">All</string>
     <string name="find">Find The Number ?</string>
     <string name="add_contact">Add Contact</string>

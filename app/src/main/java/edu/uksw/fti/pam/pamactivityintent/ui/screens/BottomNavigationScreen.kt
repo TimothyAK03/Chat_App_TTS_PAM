@@ -1,42 +1,30 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import edu.uksw.fti.pam.kotlin.firebaseauth.viewmodel.UserProfileViewModel
-import edu.uksw.fti.pam.pamactivityintent.R
-import edu.uksw.fti.pam.pamactivityintent.models.ContactModel
-import edu.uksw.fti.pam.pamactivityintent.models.GroupViewModel
-import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
-import edu.uksw.fti.pam.pamactivityintent.models.TodosViewModel
+import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
 import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
 import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
 
 @Composable
 fun NavigationGraph(
-    navController: NavHostController, navigateToProfile: (ContactModel) -> Unit,vm : UserProfileViewModel
+    navController: NavHostController, navigateToProfile: (GroupsModel) -> Unit, vm : UserProfileViewModel
 ) {
 
     NavHost(
@@ -48,7 +36,7 @@ fun NavigationGraph(
         composable(BottomNavItems.Home.screen_route) {
             HomeField(navigateToProfile)
         }
-        composable(route = BottomNavItems.Contact.screen_route) {
+        composable(route = BottomNavItems.Group.screen_route) {
             ContactsScreen(navController = navController)
         }
         composable(BottomNavItems.Profile.screen_route) {
@@ -74,7 +62,7 @@ fun BottomNavigation(
 ) {
     val items = listOf(
         BottomNavItems.Home,
-        BottomNavItems.Contact,
+        BottomNavItems.Group,
         BottomNavItems.Profile,
         BottomNavItems.Camera,
     )
@@ -130,7 +118,7 @@ fun BottomNavigation(
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BottomNavigationMainScreenView( navigateToProfile: (ContactModel) -> Unit){
+fun BottomNavigationMainScreenView( navigateToProfile: (GroupsModel) -> Unit){
     val navController = rememberNavController()
     val vm = UserProfileViewModel()
     Scaffold(

@@ -15,7 +15,7 @@ sealed class BottomNavItems (
 
     ) {
     object Home: BottomNavItems("Home", Icons.Default.Home, "home")
-    object Contact: BottomNavItems("Contact", Icons.Default.Call, "contact")
+    object Group: BottomNavItems("Group", Icons.Default.AccountCircle, "group")
     object Profile: BottomNavItems("Profile", Icons.Default.Person, "profile")
     object Camera: BottomNavItems("Camera", Icons.Default.AddCircle, "camera")
 }

@@ -1,10 +1,7 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,8 +21,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -33,18 +28,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
-import coil.size.Scale
-import coil.transform.CircleCropTransformation
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import edu.uksw.fti.pam.pamactivityintent.ChatActivity
 import edu.uksw.fti.pam.pamactivityintent.R
-import edu.uksw.fti.pam.pamactivityintent.models.ContactModel
-import edu.uksw.fti.pam.pamactivityintent.models.ContactViewModel
-import edu.uksw.fti.pam.pamactivityintent.models.GroupModel
-import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
-import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
+import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
+import edu.uksw.fti.pam.pamactivityintent.models.GroupsViewModel
 import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
 
 fun AddtoFstore(){
@@ -72,11 +58,12 @@ fun DetailScreen(nama: String?){
 
 @Composable
 fun AddContact(navController: NavController){
-    var firstNameInput by remember { mutableStateOf("") }
-    var lastNameInput by remember { mutableStateOf("") }
-    var numberInput by remember { mutableStateOf("") }
+
+    var GroupnameInput by remember { mutableStateOf("") }
+    var GroupDescription by remember { mutableStateOf("") }
+
     var img by remember { mutableStateOf("") }
-    val contactVM = remember { ContactViewModel() }
+    val contactVM = remember { GroupsViewModel() }
 
     Column(
         modifier = Modifier
@@ -84,47 +71,30 @@ fun AddContact(navController: NavController){
             .padding(top = 130.dp, start = 36.dp, end = 36.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .padding(start = 0.dp, top = 0.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
-        )
-        {
-            OutlinedTextField(
-                modifier = Modifier
-                    .width(140.dp),
-                value = firstNameInput,
-                label = { Text(text = stringResource(R.string.label_first)) },
-                onValueChange = { firstNameInput = it },
-                shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color(0xff36a8eb),
-                    unfocusedBorderColor = Color.Gray)
-            )
 
-            OutlinedTextField(
-                modifier = Modifier
-                    .padding(start = 0.dp, top = 0.dp),
-                value = lastNameInput,
-                label = { Text(text = stringResource(R.string.label_last)) },
-                onValueChange = { lastNameInput = it },
-                shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color(0xff36a8eb),
-                    unfocusedBorderColor = Color.Gray)
-            )
-        }
 
         OutlinedTextField(
-            value = numberInput,
-            onValueChange = { numberInput = it },
-            label = { Text(text = "Number") },
+            value = GroupnameInput,
+            onValueChange = { GroupnameInput = it },
+            label = { Text(text = stringResource(R.string.grupName)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color(0xff36a8eb),
                 unfocusedBorderColor = Color.Gray)
         )
+
+        OutlinedTextField(
+            value = GroupDescription,
+            onValueChange = { GroupDescription = it },
+            label = { Text(text = stringResource(R.string.grupDesc)) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xff36a8eb),
+                unfocusedBorderColor = Color.Gray)
+        )
+
 
         OutlinedTextField(
             value = img,
@@ -145,13 +115,12 @@ fun AddContact(navController: NavController){
                 .height(50.dp),
             colors = ButtonDefaults.buttonColors(Color(0xff36a8eb)),
             onClick = {
-                val newContact = ContactModel(
-                    firstName = firstNameInput,
-                    lastName = lastNameInput,
-                    number = numberInput,
+                val newGroup = GroupsModel(
+                    GroupName = GroupnameInput,
+                    GroupDescription = GroupDescription,
                     img =  img
                 )
-                contactVM.AddNewContact(newContact, navController)
+                contactVM.AddNewContact(newGroup, navController)
 
             }
         )
@@ -171,7 +140,7 @@ fun AddContact(navController: NavController){
 
 @Composable
 fun ContactsScreen(navController: NavController) {
-    val vm = ContactViewModel()
+    val vm = GroupsViewModel()
     LaunchedEffect(
         Unit,
         block = {
@@ -193,7 +162,7 @@ fun ContactsScreen(navController: NavController) {
                 .wrapContentHeight()
                 .padding(top = 30.dp, bottom = 16.dp)
         ) {
-            Text(text = stringResource(R.string.add_contact),
+            Text(text = "Group List",
                 fontSize = 26.sp,
                 color = Color(0xff36a8eb),
                 fontWeight = FontWeight.Bold
@@ -206,7 +175,7 @@ fun ContactsScreen(navController: NavController) {
         ) {
             Box(
                 modifier = Modifier
-                    .padding(start = 0.dp, top = 8.dp)
+                    .padding(start = 0.dp, top = 8.dp, bottom = 10.dp)
                     .size(132.dp),
                 contentAlignment = Alignment.TopCenter
             ) {
@@ -216,42 +185,16 @@ fun ContactsScreen(navController: NavController) {
                 )
             }
         }
-        Row(
-            modifier = Modifier
-                .padding(start = 200.dp, top = 12.dp, bottom = 16.dp)
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.add),
-                contentDescription = null,
-                tint = Color.Gray,
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .size(20.dp)
-            )
-            Icon(
-                painter = painterResource(R.drawable.search),
-                contentDescription = stringResource(id = R.string.search),
-                tint = Color.Gray,
-                modifier = Modifier.padding(start = 12.dp)
-            )
-            Icon(
-                painter = painterResource(R.drawable._dots),
-                contentDescription = null,
-                tint = Color.Gray,
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .size(20.dp)
-            )
-        }
 
-        val cont = remember { vm.contactModelList }
+
+        val cont = remember { vm.groupsModelList }
 
         LazyColumn( verticalArrangement = Arrangement.SpaceBetween) {
             items(
                 items = cont,
                 itemContent = {
                     if (it != null) {
-                        ContactListItem(contt = it)
+                        GroupListItem(contt = it)
                     }
                 }
             )
@@ -280,7 +223,7 @@ fun ContactsScreen(navController: NavController) {
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun ContactListItem( contt: ContactModel) {
+fun GroupListItem( contt: GroupsModel) {
     Row(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(10.dp))
@@ -308,7 +251,7 @@ fun ContactListItem( contt: ContactModel) {
                 .padding(top = 16.dp, start = 12.dp)
         ) {
 
-                contt.firstName?.let {
+                contt.GroupName?.let {
                     Text(
                         text = it,
                         fontSize = 18.sp,
@@ -316,15 +259,7 @@ fun ContactListItem( contt: ContactModel) {
                         fontWeight = FontWeight.Normal )
                 }
 
-                contt.lastName?.let {
-                Text(
-                    modifier = Modifier
-                        .padding(start = 5.dp),
-                    text = it,
-                    fontSize = 18.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.Normal )
-            }
+
         }
 
     }
