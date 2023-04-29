@@ -34,6 +34,9 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.HomeActivity
 import edu.uksw.fti.pam.pamactivityintent.models.*
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -171,9 +174,9 @@ fun MessageList(messageVM: MessageViewModel) {
             itemContent = {
                 if (it != null) {
                     if (it.userID == currentUser?.uid)
-                        UserBubble(message = it)
+                        MessageBubble(message = it, true, messageVM)
                     else
-                        PeerBubble(message = it)
+                        MessageBubble(message = it, false, messageVM)
                 }
             }
         )
@@ -181,56 +184,87 @@ fun MessageList(messageVM: MessageViewModel) {
 }
 
 @Composable
-fun UserBubble(message: MessageModel) {
+fun MessageBubble(message: MessageModel, isPeer: Boolean, messageVM: MessageViewModel) {
+    val uid = message.userID
+    var firstName1 by remember { mutableStateOf("") }
+
+    LaunchedEffect(uid) {
+        messageVM.getUserFirstName(uid) { firstName ->
+            firstName?.let {
+                firstName1 = it
+            }
+        }
+    }
+
+    val bubbleWidth = 200.dp // Change this to the desired width of the bubble
+    var alignBubble: Alignment
+    var colorBubble: Color
+    var horizontalArrangement: Arrangement.Horizontal
+
+    if (isPeer) {
+        alignBubble  = Alignment.CenterEnd
+        colorBubble  = Color(0Xff6db7e3)
+        horizontalArrangement = Arrangement.End
+    }
+    else {
+        alignBubble = Alignment.CenterStart
+        colorBubble = Color.White
+        horizontalArrangement = Arrangement.Start
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(80.dp, end = 10.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(color = Color(0Xff6db7e3)),
+            .padding(10.dp),
     ) {
-        Row(modifier = Modifier.padding(all = 10.dp)) {
-            Column(modifier = Modifier.weight(3.0f, true)) {
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(color = colorBubble)
+                .align(alignBubble)
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(4.dp)
+            ) {
+                Text(
+                    color = Color.Black,
+                    text = firstName1,
+
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .widthIn(max = bubbleWidth)
+                    .padding(16.dp)
+            ) {
                 message.message?.let {
                     Text(
                         text = it,
                         fontSize = 16.sp,
                         color = Color.Black,
-                        maxLines = 1,
+                        maxLines = 100,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-
             }
         }
-    }
-}
 
-@Composable
-fun PeerBubble(message: MessageModel) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp, end = 80.dp)
-            .background(color = Color.White)
-            .clip(RoundedCornerShape(8.dp)),
+    }
+    Row (
+        horizontalArrangement = horizontalArrangement,
+        modifier = Modifier.fillMaxWidth()
+
     ) {
-        Row(modifier = Modifier.padding(10.dp)) {
-            Column(modifier = Modifier.weight(3.0f, true)) {
-                message.message?.let {
-                    Text(
-                        text = it,
-                        fontSize = 16.sp,
-                        color = Color.Black,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-
-            }
+        message.timestamp?.let {
+            Text(
+                text = it,
+                color = Color.Black,
+            )
         }
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -258,10 +292,15 @@ fun MessageBox(messageVM: MessageViewModel, chatt: GroupsModel) {
             Spacer(modifier = Modifier.size(12.dp))
             FloatingActionButton(onClick = {
                 val currentUser = messageVM.user
+                val currentDate = Date()
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.getDefault())
+                val formattedDate = dateFormat.format(currentDate)
+
                 val newMessage = MessageModel(
                     message = textState,
                     userID = currentUser?.uid!!,
                     isPeer = true,
+                    timestamp = formattedDate.toString()
                 )
                 messageVM.addMessage(newMessage,chatt.GroupName!!)
             })  {

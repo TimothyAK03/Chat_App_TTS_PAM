@@ -59,7 +59,7 @@ import coil.compose.rememberImagePainter
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import edu.uksw.fti.pam.kotlin.firebaseauth.viewmodel.UserProfileViewModel
+import edu.uksw.fti.pam.pamactivityintent.models.UserProfileViewModel
 import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
 
 @Composable

@@ -1,5 +1,6 @@
 package edu.uksw.fti.pam.pamactivityintent.models
 
+import android.content.ContentValues.TAG
 import android.os.Build
 import android.os.Message
 import android.util.Log
@@ -10,8 +11,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.PropertyName
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -31,7 +34,20 @@ class MessageViewModel : ViewModel() {
 
     private val db = Firebase.firestore
 
-
+    fun getUserFirstName(uid: String?, callback: (String?) -> Unit) {
+        val docRef = db.collection("users").document(uid!!)
+        val source = Source.CACHE
+        docRef.get(source).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Document found in the offline cache
+                val document = task.result
+                val firstName = document?.getString("firstName")
+                callback(firstName)
+            } else {
+                Log.d(TAG, "Cached get failed: ", task.exception)
+            }
+        }
+    }
 
     fun startListeningForUpdates(Group: String) {
         val docRef = db.collection("chats_${Group}")

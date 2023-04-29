@@ -1,4 +1,4 @@
-package edu.uksw.fti.pam.kotlin.firebaseauth.viewmodel
+package edu.uksw.fti.pam.pamactivityintent.models
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,15 +14,14 @@ import kotlinx.coroutines.launch
 
 class UserProfileViewModel : ViewModel() {
         private var _userProfile by mutableStateOf(UserProfile(""))
+        val db = Firebase.firestore
+        val auth = Firebase.auth
 
         val userProfile: UserProfile
                 get() = _userProfile
 
         fun getLoggedInUserProfile() {
                 viewModelScope.launch {
-                        val db = Firebase.firestore
-                        val auth = Firebase.auth
-
                         val currentUser = auth.currentUser
                         val docRef = db.collection("users").document(currentUser?.uid!!)
                         docRef.get()
@@ -33,4 +32,7 @@ class UserProfileViewModel : ViewModel() {
                                 }
                 }
         }
+
+
+
 }
