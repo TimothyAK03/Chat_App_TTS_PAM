@@ -148,7 +148,7 @@ fun AddContact(navController: NavController){
                 val newContact = ContactModel(
                     firstName = firstNameInput,
                     lastName = lastNameInput,
-                    number =  numberInput,
+                    number = numberInput,
                     img =  img
                 )
                 contactVM.AddNewContact(newContact, navController)

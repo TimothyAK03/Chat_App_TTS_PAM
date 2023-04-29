@@ -32,8 +32,10 @@ fun doAuth(
 
 fun sendUsernameBackToLoginPage(
     context: Context,
-    nama: String?,
+    firstsname: String?,
+    lastsname: String?,
     username: String?,
+    number: String?,
     password: String?
 ) {
     val auth = Firebase.auth
@@ -42,7 +44,7 @@ fun sendUsernameBackToLoginPage(
         .addOnCompleteListener(context as Activity) { task->
             if (task.isSuccessful) {
                 val userUid = task.result.user?.uid
-                val userData = UserProfile(nama!!)
+                val userData = UserProfile(firstsname!!,lastsname!!,number!!, "https://cdn-icons-png.flaticon.com/512/61/61205.png" )
                 db.collection("users")
                     .document(userUid!!)
                     .set(userData)

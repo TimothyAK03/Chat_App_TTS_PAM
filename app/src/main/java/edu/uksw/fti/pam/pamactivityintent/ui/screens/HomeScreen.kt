@@ -42,9 +42,7 @@ import coil.compose.rememberImagePainter
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import com.google.accompanist.pager.*
-import edu.uksw.fti.pam.pamactivityintent.models.GroupViewModel
-import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
-import edu.uksw.fti.pam.pamactivityintent.models.TodosViewModel
+import edu.uksw.fti.pam.pamactivityintent.models.*
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import kotlin.math.roundToInt
 import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
@@ -57,7 +55,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
 @Composable
 fun HomeField(
-    navigateToProfile: (TodosModel) -> Unit
+    navigateToProfile: (ContactModel) -> Unit
 ) {
 
 
@@ -122,7 +120,7 @@ fun TopBar(){
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TabScreen(navigateToProfile: (TodosModel) -> Unit){
+fun TabScreen(navigateToProfile: (ContactModel) -> Unit){
     val pagerState = rememberPagerState(pageCount = 3)
 
     Column (modifier = Modifier.background(Color.White)) {
@@ -171,12 +169,12 @@ fun Tabs(pagerState: PagerState){
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TabsContent(pagerState: PagerState, navigateToProfile: (TodosModel) -> Unit){
+fun TabsContent(pagerState: PagerState, navigateToProfile: (ContactModel) -> Unit){
 
     HorizontalPager(state = pagerState) {page ->
         when (page){
-            0-> All(vm = TodosViewModel(), vm2 = GroupViewModel(), navigateToProfile = navigateToProfile)
-            1-> Messages(vm = TodosViewModel() , vm2 = GroupViewModel(), navigateToProfile = navigateToProfile)
+            0-> All(vm = ContactViewModel(), vm2 = GroupViewModel(), navigateToProfile = navigateToProfile)
+            1-> Messages(vm = ContactViewModel() , vm2 = GroupViewModel(), navigateToProfile = navigateToProfile)
             2-> Group(vm = TodosViewModel(), vm2 = GroupViewModel())
         }
     }
@@ -186,8 +184,8 @@ fun TabsContent(pagerState: PagerState, navigateToProfile: (TodosModel) -> Unit)
 
 @Composable
 fun All(
-    vm: TodosViewModel,
-    vm2: GroupViewModel, navigateToProfile: (TodosModel) -> Unit)
+    vm: ContactViewModel,
+    vm2: GroupViewModel, navigateToProfile: (ContactModel) -> Unit)
 {
     val displayMetrics = DisplayMetrics()
     val height = (displayMetrics.heightPixels / displayMetrics.density) - 150;
@@ -196,7 +194,7 @@ fun All(
     LaunchedEffect(
         Unit,
         block = {
-            vm.getToDoList()
+            vm.getContactList()
             vm2.getGroupList()
         }
     )
@@ -236,13 +234,13 @@ fun All(
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                val chat = remember { vm.toDoList }
+                val chat = remember { vm.contactModelList }
 
                     LazyColumn() {
                         items(
                             items = chat,
                             itemContent = {
-                                ChatListItem(chatt = it, navigateToProfile)
+                                ChatListItem(chatt = it!!, navigateToProfile)
                             }
                         )
                     }
@@ -295,8 +293,8 @@ fun All(
 
 @Composable
 fun Messages(
-    vm: TodosViewModel,
-    vm2: GroupViewModel,navigateToProfile: (TodosModel) -> Unit)
+    vm: ContactViewModel,
+    vm2: GroupViewModel,navigateToProfile: (ContactModel) -> Unit)
 {
     val displayMetrics = DisplayMetrics()
     val height = (displayMetrics.heightPixels / displayMetrics.density) - 150;
@@ -305,7 +303,7 @@ fun Messages(
     LaunchedEffect(
         Unit,
         block = {
-            vm.getToDoList()
+            vm.getContactList()
             vm2.getGroupList()
         }
     )
@@ -345,13 +343,13 @@ fun Messages(
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                val chat = remember { vm.toDoList }
+                val chat = remember { vm.contactModelList }
 
                 LazyColumn() {
                     items(
                         items = chat,
                         itemContent = {
-                            ChatListItem(chatt = it, navigateToProfile)
+                            ChatListItem(chatt = it!!, navigateToProfile)
                         }
                     )
                 }

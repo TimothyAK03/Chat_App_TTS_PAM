@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import edu.uksw.fti.pam.pamactivityintent.models.ContactModel
 import edu.uksw.fti.pam.pamactivityintent.models.MessageModel
 import edu.uksw.fti.pam.pamactivityintent.models.MessageViewModel
 import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
@@ -35,15 +36,15 @@ import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ChatScreen(chatt: TodosModel){
+fun ChatScreen(chatt: ContactModel){
     val messageVM = remember { MessageViewModel() }
     LaunchedEffect(Unit) {
-        messageVM.startListeningForUpdates()
+        messageVM.startListeningForUpdates(chatt.number!!)
     }
     Scaffold(
         backgroundColor = Color(0xFFEDEDED),
         topBar = { MessageTopBar(chatt = chatt) },
-        bottomBar = { MessageBox(messageVM) },
+        bottomBar = { MessageBox(messageVM,chatt = chatt) },
         content = { padding ->
             Column(
                 modifier = Modifier.padding(padding)
@@ -57,11 +58,15 @@ fun ChatScreen(chatt: TodosModel){
 
 
 @Composable
-fun MessageTopBar(chatt: TodosModel) {
+fun MessageTopBar(chatt: ContactModel) {
     TopAppBar(
         title = {
             Column(Modifier.padding(start = 16.dp)) {
-                Text(chatt.title, fontSize = 17.sp)
+                Row() {
+                    Text(chatt.firstName!!, fontSize = 17.sp)
+                    Text(chatt.lastName!!, fontSize = 17.sp, modifier = Modifier.padding(start = 5.dp))
+                }
+
 
             }
         },
@@ -99,7 +104,7 @@ fun MessageTopBar(chatt: TodosModel) {
                     modifier = Modifier.clickable {  }
                     )
                 Image(
-                    painter = rememberImagePainter(data = chatt.image),
+                    painter = rememberImagePainter(data = chatt.img),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -187,7 +192,7 @@ fun PeerBubble(message: MessageModel) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MessageBox(messageVM: MessageViewModel) {
+fun MessageBox(messageVM: MessageViewModel, chatt: ContactModel) {
     var textState by remember { mutableStateOf("") }
 
     Box(Modifier.background(Color.Transparent)) {
@@ -216,7 +221,7 @@ fun MessageBox(messageVM: MessageViewModel) {
                     userID = currentUser?.uid!!,
                     isPeer = true,
                 )
-                messageVM.addMessage(newMessage)
+                messageVM.addMessage(newMessage,chatt.number!!)
             })  {
                 Icon(imageVector = Icons.Default.Send, contentDescription = null)
             }

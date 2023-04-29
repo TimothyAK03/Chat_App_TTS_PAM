@@ -22,10 +22,11 @@ import coil.compose.base.R
 import coil.compose.rememberImagePainter
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
+import edu.uksw.fti.pam.pamactivityintent.models.ContactModel
 import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
 
 @Composable
-fun ChatListItem(chatt: TodosModel, navigateToProfile: (TodosModel) -> Unit){
+fun ChatListItem(chatt: ContactModel, navigateToProfile: (ContactModel) -> Unit){
 
 
     Card(modifier = Modifier
@@ -42,7 +43,7 @@ fun ChatListItem(chatt: TodosModel, navigateToProfile: (TodosModel) -> Unit){
                     .fillMaxSize()
             ) {
                 Image(
-                    painter = rememberImagePainter(data = chatt.image,
+                    painter = rememberImagePainter(data = chatt.img,
                         builder = {
                             scale(Scale.FILL)
                             placeholder(R.drawable.notification_action_background)
@@ -58,13 +59,24 @@ fun ChatListItem(chatt: TodosModel, navigateToProfile: (TodosModel) -> Unit){
                         .fillMaxHeight()
                         .weight(0.8f))
                 {
-                    Text(text = chatt.title,
-                        fontSize = 16.sp,
-                        color = Color(0xff2d8bc2),
-                        fontWeight = FontWeight.Bold
+                    Row() {
+                        Text(text = chatt.firstName!!,
+                            fontSize = 16.sp,
+                            color = Color(0xff2d8bc2),
+                            fontWeight = FontWeight.Bold
 
-                    )
-                    Text(text = chatt.chat,
+                        )
+                        Text(text = chatt.lastName!!,
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .padding(start = 5.dp),
+                            color = Color(0xff2d8bc2),
+                            fontWeight = FontWeight.Bold
+
+                        )
+                    }
+
+                    Text(text = "Start a conversation",
                         fontSize = 12.sp,
                         color = Color(0xff2d8bc2),
                         maxLines = 1,

@@ -25,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import edu.uksw.fti.pam.kotlin.firebaseauth.viewmodel.UserProfileViewModel
 import edu.uksw.fti.pam.pamactivityintent.R
 import edu.uksw.fti.pam.pamactivityintent.models.ContactModel
 import edu.uksw.fti.pam.pamactivityintent.models.GroupViewModel
@@ -35,8 +36,9 @@ import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
 
 @Composable
 fun NavigationGraph(
-    navController: NavHostController, navigateToProfile: (TodosModel) -> Unit,
+    navController: NavHostController, navigateToProfile: (ContactModel) -> Unit,vm : UserProfileViewModel
 ) {
+
     NavHost(
         navController = navController,
         startDestination = BottomNavItems.Home.screen_route
@@ -50,7 +52,7 @@ fun NavigationGraph(
             ContactsScreen(navController = navController)
         }
         composable(BottomNavItems.Profile.screen_route) {
-            ProfileScreen()
+            ProfileScreen(vm)
         }
         composable(BottomNavItems.Camera.screen_route) {
             CamButton()
@@ -128,8 +130,9 @@ fun BottomNavigation(
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BottomNavigationMainScreenView( navigateToProfile: (TodosModel) -> Unit){
+fun BottomNavigationMainScreenView( navigateToProfile: (ContactModel) -> Unit){
     val navController = rememberNavController()
+    val vm = UserProfileViewModel()
     Scaffold(
         bottomBar = {
             BottomNavigation(
@@ -137,6 +140,6 @@ fun BottomNavigationMainScreenView( navigateToProfile: (TodosModel) -> Unit){
             )
         }
     ) {
-        NavigationGraph(navController = navController, navigateToProfile = navigateToProfile)
+        NavigationGraph(navController = navController, navigateToProfile = navigateToProfile, vm = vm)
     }
 }

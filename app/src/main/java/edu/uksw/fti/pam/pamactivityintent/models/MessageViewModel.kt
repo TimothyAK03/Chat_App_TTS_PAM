@@ -26,11 +26,13 @@ class MessageViewModel : ViewModel() {
         get() = _messageList
 
     val user = Firebase.auth.currentUser
+
     private val db = Firebase.firestore
-    private val docRef = db.collection("chats")
 
 
-    fun startListeningForUpdates() {
+
+    fun startListeningForUpdates(number: String) {
+        val docRef = db.collection("chats_${number}")
         docRef.addSnapshotListener { snapshot, error ->
             if (error != null) {
                 Log.e("Firestore", "Error getting chat updates: ", error)
@@ -45,7 +47,8 @@ class MessageViewModel : ViewModel() {
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addMessage(message: MessageModel) {
+    fun addMessage(message: MessageModel, number: String) {
+        val docRef = db.collection("chats_${number}")
         docRef.document(LocalDateTime.now().toString())
             .set(message)
     }

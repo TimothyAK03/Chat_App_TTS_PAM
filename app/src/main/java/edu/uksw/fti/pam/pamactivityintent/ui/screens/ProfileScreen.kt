@@ -56,22 +56,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import edu.uksw.fti.pam.kotlin.firebaseauth.viewmodel.UserProfileViewModel
 import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(vm: UserProfileViewModel) {
     val context = LocalContext.current
     val dataStore = FirstName(context)
     val storeData = LastName(context)
     val savedFirst = dataStore.getFirst.collectAsState(initial = "")
     val savedLast = storeData.getLast.collectAsState(initial = "")
-
+    val user = Firebase.auth.currentUser
     var selectImages by remember { mutableStateOf(listOf<Uri>()) }
 
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
             selectImages = it
         }
+    LaunchedEffect(
+        Unit,
+        block = {
+            vm.getLoggedInUserProfile()
+        }
+    )
+
 
     Box(
         modifier = Modifier
@@ -127,29 +138,33 @@ fun ProfileScreen() {
             fontWeight = FontWeight.Bold,
             color = Color.White,
         )
-        Text(
-            modifier = Modifier
-                .padding(start = 215.dp, top = 30.dp),
-            text = savedFirst.value!!,
-            fontSize = 16.sp,
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
+        vm.userProfile.firstName?.let {
+            Text(
+                modifier = Modifier
+                    .padding(start = 215.dp, top = 30.dp),
+                text = it,
+                fontSize = 16.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
         Text(
             modifier = Modifier
                 .padding(start = 255.dp, top = 30.dp),
             text = " "
         )
-        Text(
-            modifier = Modifier
-                .padding(start = 265.dp, top = 30.dp),
-            text = savedLast.value!!,
-            fontSize = 16.sp,
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-        )
+        vm.userProfile.lastName?.let {
+            Text(
+                modifier = Modifier
+                    .padding(start = 265.dp, top = 30.dp),
+                text = it,
+                fontSize = 16.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+            )
+        }
         Text(
             modifier = Modifier
                 .padding(start = 160.dp, top = 71.dp),
@@ -512,12 +527,12 @@ fun ProfileScreen() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview3(){
-    PAMActivityIntentTheme {
-        ProfileScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview3(){
+//    PAMActivityIntentTheme {
+//        ProfileScreen()
+//    }
+//}
 
 

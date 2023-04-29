@@ -5,4 +5,4 @@ data class ContactModel(
     var lastName: String? = null,
     var number: String? = null,
     var img: String? = null
-)
+) : java.io.Serializable
