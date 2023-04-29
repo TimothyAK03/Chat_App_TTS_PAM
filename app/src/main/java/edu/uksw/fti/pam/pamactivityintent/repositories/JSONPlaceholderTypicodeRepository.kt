@@ -1,7 +1,6 @@
 package edu.uksw.fti.pam.pamactivityintent.repositories
 
 import edu.uksw.fti.pam.pamactivityintent.models.GroupMessageModel
-import edu.uksw.fti.pam.pamactivityintent.models.GroupModel
 import edu.uksw.fti.pam.pamactivityintent.models.MessageModel
 import edu.uksw.fti.pam.pamactivityintent.models.TodosModel
 import retrofit2.Retrofit
@@ -12,8 +11,6 @@ interface JSONPlaceholderTypicodeRepository {
     @GET("posts")
     suspend fun getTodos():List<TodosModel>
 
-    @GET("group")
-    suspend fun getGroup():List<GroupModel>
 
     @GET("Message")
     suspend fun getMessage():List<MessageModel>

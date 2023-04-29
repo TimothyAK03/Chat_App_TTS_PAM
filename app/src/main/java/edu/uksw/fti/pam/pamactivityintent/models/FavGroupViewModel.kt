@@ -1,10 +1,12 @@
 package edu.uksw.fti.pam.pamactivityintent.models
 
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -14,11 +16,11 @@ import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
 import kotlinx.coroutines.launch
 
-class GroupsViewModel : ViewModel() {
+class FavGroupViewModel : ViewModel() {
     val user = Firebase.auth.currentUser
     private var _groupsModelList = mutableStateListOf<GroupsModel?>()
     private val db = Firebase.firestore
-    private val docRef = db.collection("Group")
+    private val docRef = db.collection("FavGroup")
 
     var errorMessage: String by mutableStateOf("")
     val groupsModelList: SnapshotStateList<GroupsModel?>
@@ -45,23 +47,27 @@ class GroupsViewModel : ViewModel() {
             }
         }
     }
-    fun AddNewContact(Group: GroupsModel, navController: NavController) {
+    fun AddNewContact(Group: FavGroupModel) {
 
 
         val auth = Firebase.auth
 
 
         val fFirestore = Firebase.firestore
-        fFirestore.collection("Group")
-            .add(Group)
-            .addOnCompleteListener {task->
-                if(task.isSuccessful){
-                    navController.navigate(BottomNavItems.Group.screen_route)
-                }
+        fFirestore.collection("FavGroup").document(Group.GroupName!!)
+            .set(Group)
 
-
-            }
     }
 
+    fun Delete(Group: FavGroupModel) {
 
+
+        val auth = Firebase.auth
+
+
+        val fFirestore = Firebase.firestore
+        fFirestore.collection("FavGroup").document(Group.GroupName!!)
+            .delete()
+
+    }
 }

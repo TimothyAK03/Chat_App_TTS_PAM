@@ -1,5 +1,6 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
+import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -24,13 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
-import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
-import edu.uksw.fti.pam.pamactivityintent.models.MessageModel
-import edu.uksw.fti.pam.pamactivityintent.models.MessageViewModel
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import edu.uksw.fti.pam.pamactivityintent.HomeActivity
+import edu.uksw.fti.pam.pamactivityintent.models.*
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -58,6 +61,12 @@ fun ChatScreen(chatt: GroupsModel){
 
 @Composable
 fun MessageTopBar(chatt: GroupsModel) {
+    var selected by remember { mutableStateOf(false) }
+    val color = if (selected) Color.Blue else Color.White
+    val color2 = if (selected) Color.White else Color.Blue
+    val lcontext = LocalContext.current
+    val FavGroupVM = remember { FavGroupViewModel() }
+    val GroupVM = remember { GroupsViewModel() }
     TopAppBar(
         title = {
             Column(Modifier.padding(start = 16.dp)) {
@@ -68,25 +77,61 @@ fun MessageTopBar(chatt: GroupsModel) {
             }
         },
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(
-                    imageVector = Icons.Default.Call,
-                    contentDescription = null,
-                    tint = Color.White
+            IconButton(onClick = {
+                selected = !selected
+                val newGroup = FavGroupModel(
+                    GroupName = chatt.GroupName,
+                    GroupDescription = chatt.GroupDescription,
+                    img =  chatt.img
                 )
-            }
-            IconButton(onClick = { /*TODO*/ }) {
+
+                FavGroupVM.AddNewContact(newGroup)
+            }) {
                 Icon(
                     imageVector = Icons.Default.ThumbUp,
                     contentDescription = null,
-                    tint = Color.White
+                    tint = color
                 )
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                selected = !selected
+                val newGroup = FavGroupModel(
+                    GroupName = chatt.GroupName,
+                    GroupDescription = chatt.GroupDescription,
+                    img =  chatt.img
+                )
+
+                FavGroupVM.Delete(newGroup)
+            }) {
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
+                    imageVector = Icons.Default.ThumbUp,
                     contentDescription = null,
-                    tint = Color.White
+                    tint = color2
+                )
+            }
+            IconButton(onClick = {
+
+                val fFirestore = Firebase.firestore
+                val docRef = fFirestore.collection("chats_${chatt.GroupName}")
+
+                val batch = fFirestore.batch()
+                docRef.get().addOnSuccessListener { snapshot ->
+                    for (document in snapshot.documents) {
+                        batch.delete(document.reference)
+                    }
+                    batch.commit().addOnSuccessListener {
+                        lcontext.startActivity(Intent(lcontext,HomeActivity::class.java))
+
+                    }.addOnFailureListener { e ->
+                        // Handle any errors here
+                    }
+                }
+
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = Color.Red
                 )
             }
         },
@@ -98,7 +143,7 @@ fun MessageTopBar(chatt: GroupsModel) {
                     .fillMaxWidth()
             ) {
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null,
-                    modifier = Modifier.clickable {  }
+                    modifier = Modifier.clickable { lcontext.startActivity(Intent(lcontext,HomeActivity::class.java)) }
                     )
                 Image(
                     painter = rememberImagePainter(data = chatt.img),

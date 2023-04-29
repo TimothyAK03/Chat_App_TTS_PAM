@@ -111,7 +111,8 @@ fun TabScreen(navigateToProfile: (GroupsModel) -> Unit){
 @Composable
 fun Tabs(pagerState: PagerState){
 
-    val list = listOf("All", "Messages", "Group")
+
+    val list = listOf(stringResource(R.string.grup),stringResource(R.string.grupFav))
     
     val scope = rememberCoroutineScope()
     TabRow(selectedTabIndex = pagerState.currentPage,
@@ -151,9 +152,9 @@ fun TabsContent(pagerState: PagerState, navigateToProfile: (GroupsModel) -> Unit
 
     HorizontalPager(state = pagerState) {page ->
         when (page){
-            0-> All(vm = GroupsViewModel(), vm2 = GroupViewModel(), navigateToProfile = navigateToProfile)
-            1-> Messages(vm = GroupsViewModel() , vm2 = GroupViewModel(), navigateToProfile = navigateToProfile)
-            2-> Group(vm = TodosViewModel(), vm2 = GroupViewModel())
+            0-> Group(vm = GroupsViewModel(), navigateToProfile = navigateToProfile)
+            1-> FavGroup(vm = FavGroupViewModel(), navigateToProfile = navigateToProfile)
+
         }
     }
 }
@@ -161,9 +162,9 @@ fun TabsContent(pagerState: PagerState, navigateToProfile: (GroupsModel) -> Unit
 
 
 @Composable
-fun All(
+fun Group(
     vm: GroupsViewModel,
-    vm2: GroupViewModel, navigateToProfile: (GroupsModel) -> Unit)
+    navigateToProfile: (GroupsModel) -> Unit)
 {
     val displayMetrics = DisplayMetrics()
     val height = (displayMetrics.heightPixels / displayMetrics.density) - 150;
@@ -173,7 +174,7 @@ fun All(
         Unit,
         block = {
             vm.getContactList()
-            vm2.getGroupList()
+
         }
     )
 
@@ -190,25 +191,7 @@ fun All(
                 .padding(start = 30.dp, end = 30.dp)
                 .fillMaxWidth()
         ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 20.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.message),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily.SansSerif
-                )
-                Icon(
-                    painter = painterResource(R.drawable.icon_more),
-                    contentDescription = stringResource(id = R.string.icon_more),
-                    tint = Color.Black,
-                    modifier = Modifier.size(30.dp)
-                )
-            }
+
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -227,52 +210,14 @@ fun All(
             }
         }
 
-        Column(
-            modifier = Modifier
-                .padding(start = 30.dp, end = 30.dp)
-                .fillMaxWidth()
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 20.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.grup),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily.SansSerif
-                )
-                Icon(
-                    painter = painterResource(R.drawable.icon_more),
-                    contentDescription = stringResource(id = R.string.icon_more),
-                    tint = Color.Black,
-                    modifier = Modifier.size(30.dp)
-                )
-            }
-            Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                val gchat = remember { vm2.GroupList }
 
-                LazyColumn() {
-                    items(
-                        items = gchat,
-                        itemContent = {
-                            GChatListItem(gchatt = it)
-                        }
-                    )
-                }
-            }
-        }
     }
 }
 
 @Composable
-fun Messages(
-    vm: GroupsViewModel,
-    vm2: GroupViewModel, navigateToProfile: (GroupsModel) -> Unit)
+fun FavGroup(
+    vm: FavGroupViewModel,
+    navigateToProfile: (GroupsModel) -> Unit)
 {
     val displayMetrics = DisplayMetrics()
     val height = (displayMetrics.heightPixels / displayMetrics.density) - 150;
@@ -282,7 +227,7 @@ fun Messages(
         Unit,
         block = {
             vm.getContactList()
-            vm2.getGroupList()
+
         }
     )
 
@@ -299,25 +244,7 @@ fun Messages(
                 .padding(start = 30.dp, end = 30.dp)
                 .fillMaxWidth()
         ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 20.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.message),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily.SansSerif
-                )
-                Icon(
-                    painter = painterResource(R.drawable.icon_more),
-                    contentDescription = stringResource(id = R.string.icon_more),
-                    tint = Color.Black,
-                    modifier = Modifier.size(30.dp)
-                )
-            }
+
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -341,71 +268,6 @@ fun Messages(
 
 }
 
-@Composable
-fun Group( vm: TodosViewModel,
-           vm2: GroupViewModel){
-    val displayMetrics = DisplayMetrics()
-    val height = (displayMetrics.heightPixels / displayMetrics.density) - 150;
-    val width = displayMetrics.widthPixels / displayMetrics.density;
-
-    LaunchedEffect(
-        Unit,
-        block = {
-            vm.getToDoList()
-            vm2.getGroupList()
-        }
-    )
-
-    Column(
-        modifier = Modifier
-            .background(Color.White)
-            .fillMaxSize()
-            .size(width = width.dp, height = height.dp)
-
-
-    ) {
-
-        Column(
-            modifier = Modifier
-                .padding(start = 30.dp, end = 30.dp)
-                .fillMaxWidth()
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 20.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.grup),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily.SansSerif
-                )
-                Icon(
-                    painter = painterResource(R.drawable.icon_more),
-                    contentDescription = stringResource(id = R.string.icon_more),
-                    tint = Color.Black,
-                    modifier = Modifier.size(30.dp)
-                )
-            }
-            Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                val gchat = remember { vm2.GroupList }
-
-                LazyColumn() {
-                    items(
-                        items = gchat,
-                        itemContent = {
-                            GChatListItem(gchatt = it)
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
 
 
 

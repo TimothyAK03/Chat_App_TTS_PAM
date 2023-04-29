@@ -31,6 +31,7 @@
     <string name="title_activity_sign">SignUpAktivitas</string>
     <string name="message">Pesan</string>
     <string name="grup">Grup</string>
+    <string name="grupFav">Grup Favorit</string>
     <string name="grupName">Nama Grub</string>
     <string name="grupDesc">Deskripsi Grup</string>
     <string name="channel">Saluran</string>
