@@ -62,11 +62,13 @@ fun ButtonAdd(){
 @Composable
 fun Keep(contt: KeepModel) {
     AsyncImage(
-        model = contt.url,
+
+        model = contt.imageURL,
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .padding(top = 10.dp, start = 10.dp)
+            .size(120.dp)
     )
 }
 

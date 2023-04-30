@@ -23,7 +23,7 @@ class KeepViewModel : ViewModel() {
         viewModelScope.launch{
             val db = Firebase.firestore
             try {
-                val docRef = db.collection("photo")
+                val docRef = db.collection("images")
                 docRef.get()
                     .addOnSuccessListener { queryDocumentSnapshots ->
                         if (queryDocumentSnapshots != null) {

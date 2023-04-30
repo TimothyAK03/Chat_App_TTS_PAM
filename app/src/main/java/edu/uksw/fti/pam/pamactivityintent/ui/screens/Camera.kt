@@ -30,6 +30,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import edu.uksw.fti.pam.pamactivityintent.R
 import java.io.File
 import java.text.SimpleDateFormat
@@ -45,7 +47,7 @@ fun CameraView(
     onImageCaptured: (Uri) -> Unit,
     onError: (ImageCaptureException) -> Unit
 ) {
-    // 1
+
     val lensFacing = CameraSelector.LENS_FACING_BACK
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current

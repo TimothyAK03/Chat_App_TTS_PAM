@@ -1,13 +1,15 @@
-package edu.uksw.fti.pam.pamactivityintent
+        package edu.uksw.fti.pam.pamactivityintent
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -21,8 +23,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import coil.compose.rememberImagePainter
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import edu.uksw.fti.pam.pamactivityintent.ui.screens.CameraView
 import java.io.File
+import java.time.LocalDateTime
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -34,8 +40,6 @@ class CamActivity : ComponentActivity() {
     private var shouldShowCamera: MutableState<Boolean> = mutableStateOf(false)
 
     private lateinit var photoUri: Uri
-    private var shouldShowPhoto: MutableState<Boolean> = mutableStateOf(false)
-
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -47,6 +51,45 @@ class CamActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun uploadImageToStorage() {
+        val fstorage = Firebase.storage
+        val storageRef =fstorage.reference
+        val db = Firebase.firestore
+        val docRef = db.collection("images")
+
+        val imageFile = File(photoUri.path!!) // convert Uri to File
+        val imageRef = storageRef.child(imageFile.name)
+
+        val uploadTask = imageRef.putFile(photoUri)
+
+        uploadTask.addOnSuccessListener {
+            // Image upload successful
+            imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                val imageURL = downloadUri.toString()
+                val imageURLHash = hashMapOf(
+                    "imageURL" to imageURL
+                )
+                docRef.document()
+                    .set(imageURLHash)
+                    .addOnSuccessListener {
+                        Log.i("kilo", "URL Image uploaded: $imageURL")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e("kilo", "Error writing document", exception)
+                    }
+                Log.i("kilo", "Image uploaded: $imageURL")
+
+            }.addOnFailureListener { exception ->
+                Log.e("kilo", "Error getting image URL", exception)
+            }
+        }.addOnFailureListener { exception ->
+            // Image upload failed
+            Log.e("kilo", "Image upload failed: ${exception.message}", exception)
+        }
+    }
+
+    private var shouldShowPhoto: MutableState<Boolean> = mutableStateOf(false)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -65,15 +108,14 @@ class CamActivity : ComponentActivity() {
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize()
                 )
+                uploadImageToStorage()
             }
         }
 
         requestCameraPermission()
-
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
-
     private fun requestCameraPermission() {
         when {
             ContextCompat.checkSelfPermission(
