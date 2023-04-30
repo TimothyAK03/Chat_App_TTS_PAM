@@ -20,6 +20,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import edu.uksw.fti.pam.pamactivityintent.CamActivity
+import edu.uksw.fti.pam.pamactivityintent.models.AboutUsViewModel
+import edu.uksw.fti.pam.pamactivityintent.models.FavGroupViewModel
 import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
 import edu.uksw.fti.pam.pamactivityintent.models.UserProfileViewModel
 import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
@@ -52,6 +54,11 @@ fun NavigationGraph(
         ) {
             AddContact(navController = navController)
         }
+        composable(
+            route = ContactItems.FavGroup.route ,
+        ) {
+            FavGroup(vm = FavGroupViewModel(),navigateToProfile)
+        }
 
         composable(
             route = ProfileItems.UpdateScreen.route ,
@@ -61,7 +68,13 @@ fun NavigationGraph(
         composable(
             route = ProfileItems.Keep.route ,
         ) {
-            KeepScreen(navController = navController)
+            KeepScreen()
+        }
+
+        composable(
+            route = ProfileItems.AboutUs.route ,
+        ) {
+            AboutUsScreen(vm = AboutUsViewModel())
         }
     }
 }

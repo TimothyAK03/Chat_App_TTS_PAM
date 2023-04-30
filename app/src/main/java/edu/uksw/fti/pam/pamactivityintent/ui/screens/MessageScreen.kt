@@ -101,7 +101,7 @@ fun MessageTopBar(chatt: GroupsModel) {
                 Icon(
                     imageVector = Icons.Default.ThumbUp,
                     contentDescription = null,
-                    tint = color
+                    tint = Color.White
                 )
             }
             IconButton(onClick = {
@@ -115,13 +115,13 @@ fun MessageTopBar(chatt: GroupsModel) {
                 FavGroupVM.Delete(newGroup)
             }) {
                 Icon(
-                    imageVector = Icons.Default.ThumbUp,
+                    imageVector = Icons.Default.ThumbDown,
                     contentDescription = null,
-                    tint = color2
+                    tint = Color.Blue
                 )
             }
             IconButton(onClick = {
-//hapus riwayat
+//hapus ,riwayat
                 val fFirestore = Firebase.firestore
                 val docRef = fFirestore.collection("chats_${chatt.GroupName}")
 
@@ -270,6 +270,7 @@ fun MessageBubble(
                     contentScale = ContentScale.FillWidth,
                     contentDescription = null,
                     modifier = Modifier
+                        .clip(CircleShape)
                         .padding(10.dp)
                         .size(25.dp),
                     alignment = Alignment.CenterStart

@@ -71,7 +71,7 @@ fun Keep(contt: KeepModel) {
 }
 
 @Composable
-fun KeepScreen(navController: NavController) {
+fun KeepScreen() {
 
     val vm = KeepViewModel()
     LaunchedEffect(

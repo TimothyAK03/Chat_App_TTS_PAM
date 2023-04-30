@@ -9,19 +9,19 @@ import androidx.lifecycle.viewModelScope
 import edu.uksw.fti.pam.pamactivityintent.repositories.JSONPlaceholderTypicodeRepository
 import kotlinx.coroutines.launch
 
-class TodosViewModel : ViewModel() {
-    private var _toDoList = mutableStateListOf<TodosModel>()
+class AboutUsViewModel : ViewModel() {
+    private var _AboutUsList = mutableStateListOf<AboutUsModel>()
 
     var errorMessage : String by mutableStateOf("")
-    val toDoList: List<TodosModel>
-        get() = _toDoList
+    val AboutUsList: List<AboutUsModel>
+        get() = _AboutUsList
 
-    fun getToDoList() {
+    fun getAboutUsList() {
         viewModelScope.launch {
             val apiClient = JSONPlaceholderTypicodeRepository.getClient()
             try{
-                _toDoList.clear()
-                _toDoList.addAll(apiClient.getTodos())
+                _AboutUsList.clear()
+                _AboutUsList.addAll(apiClient.getAboutUs())
             }
             catch (e: Exception){
                 errorMessage = e.message!!

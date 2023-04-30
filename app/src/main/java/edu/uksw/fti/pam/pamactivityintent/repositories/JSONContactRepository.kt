@@ -1,6 +1,5 @@
 package edu.uksw.fti.pam.pamactivityintent.repositories
 
-import edu.uksw.fti.pam.pamactivityintent.models.ContactsModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

@@ -81,7 +81,7 @@ fun TopBar(){
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TabScreen(navigateToProfile: (GroupsModel) -> Unit){
-    val pagerState = rememberPagerState(pageCount = 3)
+    val pagerState = rememberPagerState(pageCount = 2)
 
     Column (modifier = Modifier.background(Color.White)) {
         Tabs(pagerState = pagerState)

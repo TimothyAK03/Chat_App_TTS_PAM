@@ -29,6 +29,7 @@ fun ChatListItem(chatt: GroupsModel, navigateToProfile: (GroupsModel) -> Unit){
 
     Card(modifier = Modifier
         .padding(10.dp, 6.dp)
+        .padding(top = 10.dp)
         .fillMaxWidth()
         .height(90.dp)
         .clickable { navigateToProfile(chatt) }, shape = RoundedCornerShape(10.dp), elevation = 4.dp,

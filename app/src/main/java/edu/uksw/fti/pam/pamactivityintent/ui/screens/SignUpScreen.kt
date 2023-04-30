@@ -44,12 +44,12 @@ fun SignUpScreen(
         Context,
         String,
         String,
-        String,
+
         String,
         String) -> Unit
 ) {
     var usernameInput by remember { mutableStateOf("") }
-    var number by remember { mutableStateOf("") }
+
     var passwordInput by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -120,16 +120,7 @@ fun SignUpScreen(
                 unfocusedBorderColor = Color.Gray)
         )
 
-        OutlinedTextField(
-            value = number,
-            onValueChange = { number = it },
-            label = { Text(text = stringResource(R.string.number)) },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xff36a8eb),
-                unfocusedBorderColor = Color.Gray)
-        )
+
 
         OutlinedTextField(
             value = passwordInput,
@@ -165,7 +156,7 @@ fun SignUpScreen(
                     Toast.makeText(context.applicationContext, "Password Tidak Sama", Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    onClickAction(context,firstName,lastName, usernameInput,number, passwordInput)
+                    onClickAction(context,firstName,lastName, usernameInput, passwordInput)
                 }
             }
         )

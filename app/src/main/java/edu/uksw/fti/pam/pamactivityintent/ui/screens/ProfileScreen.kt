@@ -31,9 +31,11 @@ import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
 import edu.uksw.fti.pam.pamactivityintent.DataStore.FirstName
 import edu.uksw.fti.pam.pamactivityintent.DataStore.LastName
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -65,13 +67,11 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.CamActivity
-import edu.uksw.fti.pam.pamactivityintent.models.UserProfileViewModel
 
 
 import edu.uksw.fti.pam.pamactivityintent.MainActivity
-import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
-import edu.uksw.fti.pam.pamactivityintent.models.GroupsViewModel
-import edu.uksw.fti.pam.pamactivityintent.models.UserProfile
+import edu.uksw.fti.pam.pamactivityintent.models.*
+import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
 import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
 import edu.uksw.fti.pam.pamactivityintent.ui.ProfileItems
 
@@ -99,6 +99,8 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
     )
 
 
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -114,29 +116,16 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
                 .padding(start = 15.dp, top = 10.dp, bottom = 10.dp)
 
         ) {
-
             AsyncImage( // <--- foto kudu nganggo async image
                 model = vm.userProfile.img,
                 contentScale = ContentScale.FillWidth,
                 contentDescription = null,
                 modifier = Modifier
                     .padding(top = 10.dp, start = 15.dp)
+                    .clip(CircleShape)
                     .size(120.dp)
             )
-            LazyVerticalGrid(GridCells.Fixed(3)) {
-                items(selectImages) { uri ->
-                    Image(
-                        painter = rememberImagePainter(uri),
-                        contentScale = ContentScale.FillWidth,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(top = 10.dp, start = 15.dp)
-                            .size(120.dp)
 
-                    )
-
-                }
-            }
 
         }
 //            Row(
@@ -225,10 +214,11 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+
             modifier = Modifier
                 .padding(15.dp)
                 .fillMaxWidth()
+                .clickable { navController.navigate(ContactItems.FavGroup.route) }
 
         ) {
             Icon(
@@ -241,7 +231,7 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
             )
             Text(
                 text = "Favourites",
-
+                modifier = Modifier.padding(start = 30.dp),
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
@@ -252,10 +242,11 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+
             modifier = Modifier
                 .padding(15.dp)
                 .fillMaxWidth()
+                .clickable { navController.navigate(ProfileItems.Keep.route) }
 
             ) {
             Icon(
@@ -270,7 +261,8 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
                 text = "Keep",
                 modifier = Modifier
 
-                    .clickable { navController.navigate(ProfileItems.Keep.route) },
+
+                    .padding(start = 30.dp),
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
@@ -281,10 +273,15 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+
             modifier = Modifier
                 .padding(15.dp)
                 .fillMaxWidth()
+                .clickable {
+                    lContext.startActivity(
+                        Intent(lContext, CamActivity::class.java)
+                    )
+                }
 
             ) {
             Icon(
@@ -298,11 +295,8 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
             Text(
                 text = "Camera",
                 modifier = Modifier
-
-                    .clickable {
-                        lContext.startActivity(
-                            Intent(lContext, CamActivity::class.java))
-                        },
+                    .padding(start = 30.dp)
+                    ,
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
@@ -313,10 +307,11 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+
             modifier = Modifier
                 .padding(15.dp)
                 .fillMaxWidth()
+                .clickable {  navController.navigate(ProfileItems.AboutUs.route) }
 
             ) {
             Icon(
@@ -329,7 +324,7 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
             )
             Text(
                 text = "About App",
-
+                modifier = Modifier.padding(start = 30.dp),
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
@@ -338,13 +333,41 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
 
         }
 
+        Column(
+            modifier = Modifier
+                .width(350.dp)
+
+        ) {
+            Divider(
+                color = Color.Gray,
+                thickness = 1.dp,
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(20.dp))
+            )
+        }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+
             modifier = Modifier
                 .padding(15.dp)
                 .fillMaxWidth()
+                .clickable {
+                    val user = Firebase.auth.currentUser!!
+                    user.delete()
+                    val fFirestore = Firebase.firestore
+                    fFirestore
+                        .collection("users")
+                        .document(user.uid)
+                        .delete()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                context.startActivity(Intent(context, MainActivity::class.java))
+                            }
+
+                        }
+
+                }
         ) {
             Icon(
                 painter = painterResource(R.drawable.accounts),
@@ -356,7 +379,7 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
             )
             Text(
                 text = "Delete Account",
-
+                modifier = Modifier.padding(start = 30.dp),
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
@@ -366,10 +389,16 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+
             modifier = Modifier
                 .padding(15.dp)
                 .fillMaxWidth()
+                .clickable {
+                    FirebaseAuth
+                        .getInstance()
+                        .signOut()
+                    context.startActivity(Intent(context, MainActivity::class.java))
+                }
         ) {
             Icon(
                 painter = painterResource(R.drawable.logout),
@@ -381,7 +410,7 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
             )
             Text(
                 text = "Log Out",
-
+                modifier = Modifier.padding(start = 30.dp),
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
@@ -390,30 +419,8 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
 
         }
 
-        Column(
-            modifier = Modifier
-                .width(350.dp)
-                .padding(start = 40.dp, top = 340.dp)
-        ) {
-            Divider(
-                color = Color.Gray,
-                thickness = 1.dp,
-                modifier = Modifier
-                    .clip(shape = RoundedCornerShape(20.dp))
-            )
-        }
-        Column(
-            modifier = Modifier
-                .width(350.dp)
-                .padding(start = 40.dp, top = 610.dp)
-        ) {
-            Divider(
-                color = Color.Gray,
-                thickness = 1.dp,
-                modifier = Modifier
-                    .clip(shape = RoundedCornerShape(20.dp))
-            )
-        }
+
+
     }
 }
 
@@ -450,7 +457,7 @@ fun updateScreen(navController: NavController, vm: UserProfileViewModel) {
     val currentUser = auth.currentUser
 
     val UpdateVM = remember { UserProfileViewModel() }
-    var number by remember { mutableStateOf(vm.userProfile.number!!) }
+
     var img by remember { mutableStateOf(vm.userProfile.img!!) }
 
     val context = LocalContext.current
@@ -521,17 +528,6 @@ fun updateScreen(navController: NavController, vm: UserProfileViewModel) {
             )
         }
 
-        OutlinedTextField(
-            value = number,
-            onValueChange = { number = it },
-            label = { Text(text = stringResource(R.string.number)) },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xff36a8eb),
-                unfocusedBorderColor = Color.Gray
-            )
-        )
 
         OutlinedTextField(
             value = img,
@@ -557,7 +553,7 @@ fun updateScreen(navController: NavController, vm: UserProfileViewModel) {
 
                     firstName = firstName,
                     lastName = lastName,
-                    number = number,
+
                     img = img
                 )
                 UpdateVM.UpdateUser(user, navController)
@@ -576,6 +572,84 @@ fun updateScreen(navController: NavController, vm: UserProfileViewModel) {
     }
 }
 
+@Composable
+fun AboutUsScreen(vm : AboutUsViewModel){
+
+    LaunchedEffect(
+        Unit,
+        block = {
+            vm.getAboutUsList()
+        }
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(start = 36.dp, end = 36.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(top = 30.dp, bottom = 16.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.about),
+                fontSize = 26.sp,
+                color = Color(0xff36a8eb),
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Box(
+            modifier = Modifier
+                .padding(start = 0.dp, top = 8.dp, bottom = 10.dp)
+                .size(132.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.iluskontak),
+                contentDescription = null
+            )
+        }
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            val About = remember { vm.AboutUsList }
+
+            LazyColumn() {
+                items(
+                    items = About,
+                    itemContent = {
+                        AboutUsItem(about = it!!)
+                    }
+                )
+            }
+
+
+        }
+
+
+    }
+}
+
+@Composable
+fun AboutUsItem(about: AboutUsModel){
+
+    Text(
+        text = about.isi,
+        color = Color(0xff2d8bc2),
+        textAlign = TextAlign.Justify,
+        modifier = Modifier
+            .padding(top = 10.dp)
+    )
+
+}
 
 //@Preview(showBackground = true)
 //@Composable

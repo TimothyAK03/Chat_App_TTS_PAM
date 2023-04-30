@@ -49,18 +49,22 @@ class GroupsViewModel : ViewModel() {
 
 
         val auth = Firebase.auth
+        var img = "https://media-assets-ggwp.s3.ap-southeast-1.amazonaws.com/2020/10/Reverie-One-Piece--640x360.jpg"
+
+        if (Group.img == ""){
+            Group.img =  "https://media-assets-ggwp.s3.ap-southeast-1.amazonaws.com/2020/10/Reverie-One-Piece--640x360.jpg"
+            val fFirestore = Firebase.firestore
+            fFirestore.collection("Group").document(Group.GroupName!!)
+                .set(Group)
+                .addOnCompleteListener {task->
+                    if(task.isSuccessful){
+                        navController.navigate(BottomNavItems.Group.screen_route)
+                    }
 
 
-        val fFirestore = Firebase.firestore
-        fFirestore.collection("Group").document(Group.GroupName!!)
-            .set(Group)
-            .addOnCompleteListener {task->
-                if(task.isSuccessful){
-                    navController.navigate(BottomNavItems.Group.screen_route)
                 }
+        }
 
-
-            }
     }
 
     fun DeleteGroup(GroupName : String, navController: NavController) {
