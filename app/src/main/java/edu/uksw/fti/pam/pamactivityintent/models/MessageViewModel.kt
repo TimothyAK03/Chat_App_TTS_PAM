@@ -2,7 +2,6 @@ package edu.uksw.fti.pam.pamactivityintent.models
 
 import android.content.ContentValues.TAG
 import android.os.Build
-import android.os.Message
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
@@ -12,17 +11,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.PropertyName
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import com.google.type.DateTime
-import edu.uksw.fti.pam.pamactivityintent.models.MessageModel
-import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 
 class MessageViewModel : ViewModel() {
@@ -34,15 +26,14 @@ class MessageViewModel : ViewModel() {
 
     private val db = Firebase.firestore
 
-    fun getUserFirstName(uid: String?, callback: (String?) -> Unit) {
+    fun getUserFirstDocument(uid: String?, callback: (DocumentSnapshot?) -> Unit) {
         val docRef = db.collection("users").document(uid!!)
         val source = Source.CACHE
         docRef.get(source).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // Document found in the offline cache
                 val document = task.result
-                val firstName = document?.getString("firstName")
-                callback(firstName)
+                callback(document)
             } else {
                 Log.d(TAG, "Cached get failed: ", task.exception)
             }

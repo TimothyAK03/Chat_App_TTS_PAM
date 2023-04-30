@@ -4,13 +4,17 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -23,13 +27,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.HomeActivity
@@ -164,11 +171,16 @@ fun MessageTopBar(chatt: GroupsModel) {
 }
 
 @Composable
-fun MessageList(messageVM: MessageViewModel) {
+fun MessageList(
+    messageVM: MessageViewModel,
+) {
 
     val listMessage =  remember { messageVM.messageList }
     val currentUser = messageVM.user
-    LazyColumn () {
+    LazyColumn (
+        Modifier
+
+            ) {
         items(
             items = listMessage,
             itemContent = {
@@ -184,59 +196,90 @@ fun MessageList(messageVM: MessageViewModel) {
 }
 
 @Composable
-fun MessageBubble(message: MessageModel, isPeer: Boolean, messageVM: MessageViewModel) {
+fun MessageBubble(
+    message: MessageModel,
+    isPeer: Boolean,
+    messageVM: MessageViewModel
+) {
     val uid = message.userID
-    var firstName1 by remember { mutableStateOf("") }
+    var userDocument by remember { mutableStateOf<DocumentSnapshot?>(null) }
+    var firstName = userDocument?.getString("firstName")
+    var userImg = userDocument?.getString("img")
 
     LaunchedEffect(uid) {
-        messageVM.getUserFirstName(uid) { firstName ->
-            firstName?.let {
-                firstName1 = it
+        messageVM.getUserFirstDocument(uid) { document ->
+            document?.let {
+                userDocument = it
             }
         }
     }
 
+
     val bubbleWidth = 200.dp // Change this to the desired width of the bubble
-    var alignBubble: Alignment
-    var colorBubble: Color
-    var horizontalArrangement: Arrangement.Horizontal
+    val alignBubble: Alignment
+    val colorBubble: Color
+    val horizontalArrangement: Arrangement.Horizontal
+    val textColor: Color
 
     if (isPeer) {
         alignBubble  = Alignment.CenterEnd
         colorBubble  = Color(0Xff6db7e3)
         horizontalArrangement = Arrangement.End
+        textColor = Color(0xFFEEF4F8)
     }
     else {
         alignBubble = Alignment.CenterStart
         colorBubble = Color.White
         horizontalArrangement = Arrangement.Start
+        textColor = Color(0xFF6DB6E2)
     }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
             .padding(10.dp),
     ) {
         Row(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
                 .background(color = colorBubble)
                 .align(alignBubble)
+                .shadow(2.dp)
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .padding(4.dp)
-            ) {
-                Text(
-                    color = Color.Black,
-                    text = firstName1,
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.End
 
+            ) {
+                if (firstName != null) {
+                    Text(
+                        color = textColor,
+                        text = firstName,
+                        )
+                }
+                AsyncImage( // <--- foto kudu nganggo async image
+                    model = userImg,
+                    contentScale = ContentScale.FillWidth,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .size(25.dp),
+                    alignment = Alignment.CenterStart
                 )
             }
+//            Divider(
+//                color = Color.Gray,
+//                thickness = 90.dp,
+//                modifier = Modifier
+//                    .fillMaxHeight()
+//                    .width(1.dp)
+//            )
             Column(
                 modifier = Modifier
                     .widthIn(max = bubbleWidth)
-                    .padding(16.dp)
+                    .padding(10.dp)
             ) {
                 message.message?.let {
                     Text(
@@ -253,7 +296,9 @@ fun MessageBubble(message: MessageModel, isPeer: Boolean, messageVM: MessageView
     }
     Row (
         horizontalArrangement = horizontalArrangement,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)
 
     ) {
         message.timestamp?.let {
@@ -277,7 +322,7 @@ fun MessageBox(messageVM: MessageViewModel, chatt: GroupsModel) {
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            TextField(
+            BasicTextField(
                 value = textState,
                 modifier = Modifier
                     .weight(1f, true)
@@ -303,9 +348,14 @@ fun MessageBox(messageVM: MessageViewModel, chatt: GroupsModel) {
                     timestamp = formattedDate.toString()
                 )
                 messageVM.addMessage(newMessage,chatt.GroupName!!)
+                textState = ""
+
             })  {
                 Icon(imageVector = Icons.Default.Send, contentDescription = null)
             }
         }
     }
+
 }
+
+
