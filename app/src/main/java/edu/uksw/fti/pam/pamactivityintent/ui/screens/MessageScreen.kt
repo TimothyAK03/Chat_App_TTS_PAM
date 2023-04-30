@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -174,24 +175,29 @@ fun MessageTopBar(chatt: GroupsModel) {
 fun MessageList(
     messageVM: MessageViewModel,
 ) {
-
+    val scrollState = rememberLazyListState()
     val listMessage =  remember { messageVM.messageList }
     val currentUser = messageVM.user
     LazyColumn (
-        Modifier
-
-            ) {
+        state = scrollState,
+        modifier = Modifier.fillMaxSize()
+    ) {
         items(
             items = listMessage,
-            itemContent = {
-                if (it != null) {
-                    if (it.userID == currentUser?.uid)
-                        MessageBubble(message = it, true, messageVM)
-                    else
-                        MessageBubble(message = it, false, messageVM)
+            key = { it?.id!! },
+            itemContent = { message ->
+                if (message != null) {
+                    if (message.userID == currentUser?.uid) {
+                        MessageBubble(message, true, messageVM)
+                    } else {
+                        MessageBubble(message, false, messageVM)
+                    }
                 }
             }
         )
+    }
+    LaunchedEffect(listMessage.size) {
+        scrollState.animateScrollToItem(listMessage.size)
     }
 }
 
