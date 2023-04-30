@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.*
 import edu.uksw.fti.pam.pamactivityintent.models.*
@@ -59,38 +60,19 @@ fun TopBar(){
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.07f),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(R.drawable.icon_notification),
-                contentDescription = stringResource(id = R.string.notif),
-                tint = Color.Gray,
-                modifier = Modifier.padding(start = 15.dp, end = 30.dp)
-            )
+
             Text(
                 "Sentigram",
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xff36a8eb),
+
                 fontSize = 22.sp
             )
-            Row(
-                modifier = Modifier.padding(end = 15.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.filter_list),
-                    contentDescription = stringResource(id = R.string.filter_list),
-                    tint = Color.Gray,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Icon(
-                    painter = painterResource(R.drawable.search),
-                    contentDescription = stringResource(id = R.string.search),
-                    tint = Color.Gray,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+
         }
 
 

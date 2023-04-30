@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -51,25 +52,33 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import edu.uksw.fti.pam.pamactivityintent.CamActivity
 import edu.uksw.fti.pam.pamactivityintent.models.UserProfileViewModel
 
 
 import edu.uksw.fti.pam.pamactivityintent.MainActivity
+import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
+import edu.uksw.fti.pam.pamactivityintent.models.GroupsViewModel
+import edu.uksw.fti.pam.pamactivityintent.models.UserProfile
+import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
+import edu.uksw.fti.pam.pamactivityintent.ui.ProfileItems
 
 import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
 
 @Composable
-fun ProfileScreen(vm: UserProfileViewModel) {
+fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
     val context = LocalContext.current
     val dataStore = FirstName(context)
     val storeData = LastName(context)
@@ -77,7 +86,7 @@ fun ProfileScreen(vm: UserProfileViewModel) {
     val savedLast = storeData.getLast.collectAsState(initial = "")
     val user = Firebase.auth.currentUser
     var selectImages by remember { mutableStateOf(listOf<Uri>()) }
-
+    val lContext = LocalContext.current
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
             selectImages = it
@@ -186,7 +195,7 @@ fun ProfileScreen(vm: UserProfileViewModel) {
                     .height(44.dp)
                     .padding(top = 8.dp, start = 6.dp, end = 10.dp),
                 colors = ButtonDefaults.buttonColors(Color.White),
-                onClick = {},
+                onClick = { navController.navigate(ProfileItems.UpdateScreen.route) },
                 shape = RoundedCornerShape(8.dp)
             )
             {
@@ -213,11 +222,15 @@ fun ProfileScreen(vm: UserProfileViewModel) {
         modifier = Modifier
             .padding(start = 36.dp, top = 240.dp, end = 16.dp)
     ) {
-        Row(
-            modifier = Modifier.width(440.dp),
-            horizontalArrangement = Arrangement.Start,
 
-            ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .padding(15.dp)
+                .fillMaxWidth()
+
+        ) {
             Icon(
                 painter = painterResource(R.drawable.favourites),
                 contentDescription = stringResource(id = R.string.favourites),
@@ -228,27 +241,21 @@ fun ProfileScreen(vm: UserProfileViewModel) {
             )
             Text(
                 text = "Favourites",
-                modifier = Modifier
-                    .padding(start = 36.dp, top = 0.dp, end = 155.dp),
+
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black,
-            )
-            Icon(
-                painter = painterResource(R.drawable.arrow_rights),
-                contentDescription = stringResource(id = R.string.arrow_rights),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(start = 0.dp, top = 4.dp)
-            )
+
+                )
+
         }
         Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .width(440.dp)
-                .padding(top = 24.dp),
-            horizontalArrangement = Arrangement.Start,
+                .padding(15.dp)
+                .fillMaxWidth()
 
             ) {
             Icon(
@@ -260,193 +267,85 @@ fun ProfileScreen(vm: UserProfileViewModel) {
                     .padding(top = 4.dp)
             )
             Text(
-                text = "Downloads",
+                text = "Keep",
                 modifier = Modifier
-                    .padding(start = 36.dp, top = 0.dp, end = 149.dp),
+
+                    .clickable { navController.navigate(ProfileItems.Keep.route) },
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black,
             )
-            Icon(
-                painter = painterResource(R.drawable.arrow_rights),
-                contentDescription = stringResource(id = R.string.arrow_rights),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(start = 0.dp, top = 4.dp)
-            )
+
         }
 
         Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .width(440.dp)
-                .padding(top = 48.dp),
-            horizontalArrangement = Arrangement.Start,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.languages),
-                contentDescription = stringResource(id = R.string.languages),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(top = 4.dp)
-            )
-            Text(
-                text = "Languages",
-                modifier = Modifier
-                    .padding(start = 36.dp, top = 0.dp, end = 150.dp),
-                fontSize = 17.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-            )
-            Icon(
-                painter = painterResource(R.drawable.arrow_rights),
-                contentDescription = stringResource(id = R.string.arrow_rights),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(start = 0.dp, top = 4.dp)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .width(440.dp)
-                .padding(top = 24.dp),
-            horizontalArrangement = Arrangement.Start,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.location),
-                contentDescription = stringResource(id = R.string.location),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(top = 4.dp)
-            )
-            Text(
-                text = "Location",
-                modifier = Modifier
-                    .padding(start = 36.dp, top = 0.dp, end = 169.dp),
-                fontSize = 17.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-            )
-            Icon(
-                painter = painterResource(R.drawable.arrow_rights),
-                contentDescription = stringResource(id = R.string.arrow_rights),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(start = 0.dp, top = 4.dp)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .width(440.dp)
-                .padding(top = 24.dp),
-            horizontalArrangement = Arrangement.Start,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.display),
-                contentDescription = stringResource(id = R.string.display),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(top = 4.dp)
-            )
-            Text(
-                text = "Display",
-                modifier = Modifier
-                    .padding(start = 36.dp, top = 0.dp, end = 180.dp),
-                fontSize = 17.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-            )
-            Icon(
-                painter = painterResource(R.drawable.arrow_rights),
-                contentDescription = stringResource(id = R.string.arrow_rights),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(start = 0.dp, top = 4.dp)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .width(440.dp)
-                .padding(top = 24.dp),
-            horizontalArrangement = Arrangement.Start,
+                .padding(15.dp)
+                .fillMaxWidth()
 
             ) {
             Icon(
-                painter = painterResource(R.drawable.subscribe),
-                contentDescription = stringResource(id = R.string.subscribe),
+                painter = painterResource(R.drawable.camera),
+                contentDescription = stringResource(id = R.string.camera),
                 tint = Color.Black,
                 modifier = Modifier
                     .size(24.dp)
                     .padding(top = 4.dp)
             )
             Text(
-                text = "Subscription",
+                text = "Camera",
                 modifier = Modifier
-                    .padding(start = 36.dp, top = 0.dp, end = 136.dp),
+
+                    .clickable {
+                        lContext.startActivity(
+                            Intent(lContext, CamActivity::class.java))
+                        },
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black,
             )
-            Icon(
-                painter = painterResource(R.drawable.arrow_rights),
-                contentDescription = stringResource(id = R.string.arrow_rights),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(start = 0.dp, top = 4.dp)
-            )
+
         }
+
         Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .width(440.dp)
-                .padding(top = 24.dp),
-            horizontalArrangement = Arrangement.Start,
+                .padding(15.dp)
+                .fillMaxWidth()
 
             ) {
             Icon(
-                painter = painterResource(R.drawable.time),
-                contentDescription = stringResource(id = R.string.time),
+                painter = painterResource(R.drawable.baseline_apps_24),
+                contentDescription = stringResource(id = R.string.about),
                 tint = Color.Black,
                 modifier = Modifier
                     .size(24.dp)
                     .padding(top = 4.dp)
             )
             Text(
-                text = "Clear History",
-                modifier = Modifier
-                    .padding(start = 36.dp, top = 0.dp, end = 132.dp),
+                text = "About App",
+
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black,
             )
-            Icon(
-                painter = painterResource(R.drawable.arrow_rights),
-                contentDescription = stringResource(id = R.string.arrow_rights),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(start = 0.dp, top = 4.dp)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .width(440.dp)
-                .padding(top = 48.dp),
-            horizontalArrangement = Arrangement.Start,
 
-            ) {
+        }
+
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .padding(15.dp)
+                .fillMaxWidth()
+        ) {
             Icon(
                 painter = painterResource(R.drawable.accounts),
                 contentDescription = stringResource(id = R.string.accounts),
@@ -456,79 +355,227 @@ fun ProfileScreen(vm: UserProfileViewModel) {
                     .padding(top = 4.dp)
             )
             Text(
-                text = "Accounts",
-                modifier = Modifier
-                    .padding(start = 36.dp, top = 0.dp, end = 160.dp),
+                text = "Delete Account",
+
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black,
             )
-            Icon(
-                painter = painterResource(R.drawable.arrow_rights),
-                contentDescription = stringResource(id = R.string.arrow_rights),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(start = 0.dp, top = 4.dp)
-            )
+
         }
         Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .width(440.dp)
-                .padding(top = 24.dp)
-                .clickable {
-                    FirebaseAuth.getInstance().signOut()
-                    context.startActivity(Intent(context, MainActivity::class.java)) },
-            horizontalArrangement = Arrangement.Start,
-
-            ) {
-
+                .padding(15.dp)
+                .fillMaxWidth()
+        ) {
             Icon(
                 painter = painterResource(R.drawable.logout),
                 contentDescription = stringResource(id = R.string.logout),
-                tint = Color.Red,
+                tint = Color.Black,
                 modifier = Modifier
                     .size(24.dp)
                     .padding(top = 4.dp)
-
             )
             Text(
                 text = "Log Out",
-                modifier = Modifier
-                    .padding(start = 36.dp, top = 0.dp, end = 174.dp),
+
                 fontSize = 17.sp,
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Normal,
-                color = Color.Red,
+                color = Color.Black,
+            )
+
+        }
+
+        Column(
+            modifier = Modifier
+                .width(350.dp)
+                .padding(start = 40.dp, top = 340.dp)
+        ) {
+            Divider(
+                color = Color.Gray,
+                thickness = 1.dp,
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(20.dp))
+            )
+        }
+        Column(
+            modifier = Modifier
+                .width(350.dp)
+                .padding(start = 40.dp, top = 610.dp)
+        ) {
+            Divider(
+                color = Color.Gray,
+                thickness = 1.dp,
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(20.dp))
             )
         }
     }
-    Column(
+}
+
+@Composable
+fun CameraButton( navController: NavController) {
+
+    val lContext = LocalContext.current
+    Button(
         modifier = Modifier
-            .width(350.dp)
-            .padding(start = 40.dp, top = 340.dp)
-    ){
-        Divider(
-            color = Color.Gray,
-            thickness = 1.dp,
-            modifier = Modifier
-                .clip(shape = RoundedCornerShape(20.dp))
-        )
-    }
-    Column(
-        modifier = Modifier
-            .width(350.dp)
-            .padding(start = 40.dp, top = 610.dp)
-    ){
-        Divider(
-            color = Color.Gray,
-            thickness = 1.dp,
-            modifier = Modifier
-                .clip(shape = RoundedCornerShape(20.dp))
+            .fillMaxWidth()
+            .padding(top = 230.dp, start = 50.dp, end = 50.dp)
+            .height(50.dp),
+        colors = ButtonDefaults.buttonColors(Color(0xff36a8eb)),
+        onClick = {
+            lContext.startActivity(
+                Intent(lContext, CamActivity::class.java))
+        }
+    )
+    {
+        // button text
+        Text(
+            text = "Camera Photo",
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+
         )
     }
 }
+
+@Composable
+fun updateScreen(navController: NavController, vm: UserProfileViewModel) {
+    val auth = Firebase.auth
+    val currentUser = auth.currentUser
+
+    val UpdateVM = remember { UserProfileViewModel() }
+    var number by remember { mutableStateOf(vm.userProfile.number!!) }
+    var img by remember { mutableStateOf(vm.userProfile.img!!) }
+
+    val context = LocalContext.current
+    var firstName by remember { mutableStateOf(vm.userProfile.firstName!!) }
+    var lastName by remember { mutableStateOf(vm.userProfile.lastName!!) }
+
+
+
+    LaunchedEffect(
+        Unit,
+        block = {
+            vm.getLoggedInUserProfile()
+        }
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 40.dp),
+        horizontalArrangement = Arrangement.Center
+    )
+    {
+        Text(
+            "Update Profile User",
+            fontFamily = androidx.compose.ui.text.font.FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xff36a8eb),
+            fontSize = 36.sp
+        )
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 130.dp, start = 36.dp, end = 36.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 0.dp, top = 0.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        )
+        {
+            OutlinedTextField(
+                modifier = Modifier
+                    .width(140.dp),
+                value = firstName,
+                label = { Text(text = stringResource(R.string.label_first)) },
+
+                onValueChange = { firstName = it },
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color(0xff36a8eb),
+                    unfocusedBorderColor = Color.Gray
+                )
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .padding(start = 0.dp, top = 0.dp),
+                value = lastName,
+                label = { Text(text = stringResource(R.string.label_last)) },
+                onValueChange = { lastName = it },
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color(0xff36a8eb),
+                    unfocusedBorderColor = Color.Gray
+                )
+            )
+        }
+
+        OutlinedTextField(
+            value = number,
+            onValueChange = { number = it },
+            label = { Text(text = stringResource(R.string.number)) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xff36a8eb),
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+        OutlinedTextField(
+            value = img,
+            onValueChange = { img = it },
+            label = { Text(text = "Link Img") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xff36a8eb),
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 0.dp)
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xff36a8eb)),
+            onClick = {
+                val user = UserProfile(
+
+                    firstName = firstName,
+                    lastName = lastName,
+                    number = number,
+                    img = img
+                )
+                UpdateVM.UpdateUser(user, navController)
+
+            }
+        )
+        {
+            // button text
+            Text(
+                text = "Update",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
 
 //@Preview(showBackground = true)
 //@Composable

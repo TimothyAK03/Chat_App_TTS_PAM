@@ -1,6 +1,7 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -9,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -17,16 +19,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import edu.uksw.fti.pam.pamactivityintent.CamActivity
 import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
 import edu.uksw.fti.pam.pamactivityintent.models.UserProfileViewModel
 import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
 import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
+import edu.uksw.fti.pam.pamactivityintent.ui.ProfileItems
 
 @Composable
 fun NavigationGraph(
     navController: NavHostController, navigateToProfile: (GroupsModel) -> Unit, vm : UserProfileViewModel
 ) {
-
+    val lContext = LocalContext.current
     NavHost(
         navController = navController,
         startDestination = BottomNavItems.Home.screen_route
@@ -40,17 +44,25 @@ fun NavigationGraph(
             ContactsScreen(navController = navController)
         }
         composable(BottomNavItems.Profile.screen_route) {
-            ProfileScreen(vm)
+            ProfileScreen(vm,navController = navController)
         }
-        composable(BottomNavItems.Camera.screen_route) {
-            CamButton()
-        }
+
         composable(
             route = ContactItems.AddScreen.route ,
         ) {
             AddContact(navController = navController)
         }
 
+        composable(
+            route = ProfileItems.UpdateScreen.route ,
+        ) {
+            updateScreen(navController = navController, vm)
+        }
+        composable(
+            route = ProfileItems.Keep.route ,
+        ) {
+            KeepScreen(navController = navController)
+        }
     }
 }
 
@@ -64,7 +76,7 @@ fun BottomNavigation(
         BottomNavItems.Home,
         BottomNavItems.Group,
         BottomNavItems.Profile,
-        BottomNavItems.Camera,
+
     )
     Column(
 //        modifier = Modifier

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sentigram</string>
-    <string name="camera">camera</string>
+    <string name="camera">Kamera</string>
     <string name="notif">Notifikasi Nonaktif</string>
     <string name="icon_login">icon_login</string>
     <string name="icon_dream">icon_dream</string>
@@ -39,5 +39,6 @@
     <string name="all">Semua</string>
     <string name="find">Cari Nomor Telepon ?</string>
     <string name="add_contact">Tambahkan Kontak</string>
+    <string name="about">Tentang Apps</string>
     <!--    <string name="btn_login_title">Masuk</string>-->
 </resources>

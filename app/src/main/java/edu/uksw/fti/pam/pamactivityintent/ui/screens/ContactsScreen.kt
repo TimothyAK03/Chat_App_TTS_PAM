@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -65,12 +66,42 @@ fun AddContact(navController: NavController){
     var img by remember { mutableStateOf("") }
     val contactVM = remember { GroupsViewModel() }
 
+
+
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 130.dp, start = 36.dp, end = 36.dp),
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(start = 36.dp, end = 36.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(top = 30.dp, bottom = 16.dp)
+        ) {
+            Text(
+                text = "Group List",
+                fontSize = 26.sp,
+                color = Color(0xff36a8eb),
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Box(
+            modifier = Modifier
+                .padding(start = 0.dp, top = 8.dp, bottom = 10.dp)
+                .size(132.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.iluskontak),
+                contentDescription = null
+            )
+        }
 
 
         OutlinedTextField(
@@ -99,7 +130,7 @@ fun AddContact(navController: NavController){
         OutlinedTextField(
             value = img,
             onValueChange = { img = it },
-            label = { Text(text = "Img")},
+            label = { Text(text = "Link Img")},
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -189,12 +220,14 @@ fun ContactsScreen(navController: NavController) {
 
         val cont = remember { vm.groupsModelList }
 
-        LazyColumn( verticalArrangement = Arrangement.SpaceBetween) {
+        LazyColumn(
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             items(
                 items = cont,
                 itemContent = {
                     if (it != null) {
-                        GroupListItem(contt = it)
+                        GroupListItem(contt = it,navController)
                     }
                 }
             )
@@ -223,7 +256,9 @@ fun ContactsScreen(navController: NavController) {
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun GroupListItem( contt: GroupsModel) {
+fun GroupListItem( contt: GroupsModel,navController: NavController) {
+    val delVM = remember { GroupsViewModel() }
+
     Row(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(10.dp))
@@ -247,8 +282,12 @@ fun GroupListItem( contt: GroupsModel) {
                 .height(40.dp), // <---- ganti2 wae neng modifier
         )
         Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .padding(top = 16.dp, start = 12.dp)
+                .padding(15.dp)
+                .fillMaxWidth()
+
         ) {
 
                 contt.GroupName?.let {
@@ -258,6 +297,19 @@ fun GroupListItem( contt: GroupsModel) {
                         color = Color.White,
                         fontWeight = FontWeight.Normal )
                 }
+            
+            Text(
+                text = "Delete",
+                fontSize = 18.sp,
+                color = Color.Blue,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier
+
+                    .clickable { delVM.DeleteGroup(contt.GroupName!!,navController) }
+
+
+
+            )
 
 
         }

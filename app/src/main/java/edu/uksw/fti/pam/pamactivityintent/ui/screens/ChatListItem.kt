@@ -1,16 +1,16 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,36 +37,41 @@ fun ChatListItem(chatt: GroupsModel, navigateToProfile: (GroupsModel) -> Unit){
         Surface() {
             Row(
                 Modifier
-                    .padding(4.dp)
+                    .padding(10.dp)
                     .fillMaxSize()
             ) {
-
-                Image(
-                    painter = rememberImagePainter(data = chatt.img,
-                        builder = {
-                            scale(Scale.FILL)
-                            placeholder(R.drawable.notification_action_background)
-                            transformations(
-                                CircleCropTransformation()
-                            )
-                        }),
-                    contentDescription = null)
-
-                Column(verticalArrangement = Arrangement.Center,
+                Row(
                     modifier = Modifier
-                        .padding(6.dp)
+                        .padding(top = 6.dp)
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(60.dp),
+                        painter = rememberImagePainter(data = chatt.img,
+                            builder = {
+                                scale(Scale.FILL)
+                                placeholder(R.drawable.notification_action_background)
+                                transformations(
+                                    CircleCropTransformation()
+                                )
+                            }),
+                        contentDescription = null)
+                }
+
+                Column(verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .padding(8.dp)
                         .fillMaxHeight()
                         .weight(0.8f))
                 {
+
                     chatt.GroupName?.let {
                         Text(text = it,
                             fontSize = 16.sp,
                             color = Color(0xff2d8bc2),
                             fontWeight = FontWeight.Bold
-
                         )
                     }
-
 
                     chatt.GroupDescription?.let {
                         Text(text = it,
@@ -80,20 +85,17 @@ fun ChatListItem(chatt: GroupsModel, navigateToProfile: (GroupsModel) -> Unit){
 
                 Column(
                     modifier = Modifier
-                        .size(height = 80.dp, width = 30.dp)
-                        .padding(
-                            top = 4.dp,
-                            bottom = 4.dp
-                        ),
+                        .size(height = 80.dp, width = 70.dp)
+                        .padding(14.dp),
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("09.00", fontSize = 11.sp)
+                    Text("09.00", fontSize = 9.sp)
                     Icon(
                         painter = painterResource(edu.uksw.fti.pam.pamactivityintent.R.drawable.icon_read),
                         contentDescription = null,
                         tint = Color.Gray,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }

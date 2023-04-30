@@ -121,7 +121,7 @@ fun MessageTopBar(chatt: GroupsModel) {
                 )
             }
             IconButton(onClick = {
-
+//hapus riwayat
                 val fFirestore = Firebase.firestore
                 val docRef = fFirestore.collection("chats_${chatt.GroupName}")
 
@@ -132,7 +132,7 @@ fun MessageTopBar(chatt: GroupsModel) {
                     }
                     batch.commit().addOnSuccessListener {
                         lcontext.startActivity(Intent(lcontext,HomeActivity::class.java))
-
+//
                     }.addOnFailureListener { e ->
                         // Handle any errors here
                     }

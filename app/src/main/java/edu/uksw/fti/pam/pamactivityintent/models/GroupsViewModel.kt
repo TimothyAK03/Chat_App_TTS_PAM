@@ -52,8 +52,26 @@ class GroupsViewModel : ViewModel() {
 
 
         val fFirestore = Firebase.firestore
-        fFirestore.collection("Group")
-            .add(Group)
+        fFirestore.collection("Group").document(Group.GroupName!!)
+            .set(Group)
+            .addOnCompleteListener {task->
+                if(task.isSuccessful){
+                    navController.navigate(BottomNavItems.Group.screen_route)
+                }
+
+
+            }
+    }
+
+    fun DeleteGroup(GroupName : String, navController: NavController) {
+
+
+
+
+
+        val fFirestore = Firebase.firestore
+        fFirestore.collection("Group").document(GroupName)
+            .delete()
             .addOnCompleteListener {task->
                 if(task.isSuccessful){
                     navController.navigate(BottomNavItems.Group.screen_route)
