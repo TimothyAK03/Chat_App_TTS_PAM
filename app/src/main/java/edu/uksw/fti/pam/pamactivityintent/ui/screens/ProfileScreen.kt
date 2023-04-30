@@ -55,11 +55,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.models.UserProfileViewModel
+
+
+import edu.uksw.fti.pam.pamactivityintent.MainActivity
+
 import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
 
 @Composable
@@ -99,6 +105,15 @@ fun ProfileScreen(vm: UserProfileViewModel) {
                 .padding(start = 15.dp, top = 10.dp, bottom = 10.dp)
 
         ) {
+
+            AsyncImage( // <--- foto kudu nganggo async image
+                model = vm.userProfile.img,
+                contentScale = ContentScale.FillWidth,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 15.dp)
+                    .size(120.dp)
+            )
             LazyVerticalGrid(GridCells.Fixed(3)) {
                 items(selectImages) { uri ->
                     Image(
@@ -108,20 +123,12 @@ fun ProfileScreen(vm: UserProfileViewModel) {
                         modifier = Modifier
                             .padding(top = 10.dp, start = 15.dp)
                             .size(120.dp)
-                            .clickable {galleryLauncher.launch("image/*")}
+
                     )
 
                 }
             }
-            Icon(
-                painter = painterResource(R.drawable.camera),
-                contentDescription = stringResource(id = R.string.camera),
-                tint = Color.Yellow,
-                modifier = Modifier
-                    .size(85.dp)
-                    .padding(start = 52.dp, top = 52.dp)
-                    .clickable {galleryLauncher.launch("image/*")}
-            )
+
         }
 //            Row(
 //                modifier = Modifier
@@ -165,15 +172,7 @@ fun ProfileScreen(vm: UserProfileViewModel) {
                 color = Color.White,
             )
         }
-        Text(
-            modifier = Modifier
-                .padding(start = 160.dp, top = 71.dp),
-            text = "Saya Suka Menabung ...",
-            fontSize = 14.sp,
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight.Normal,
-            color = Color.White,
-        )
+
 
         Row(
             modifier = Modifier
@@ -477,7 +476,10 @@ fun ProfileScreen(vm: UserProfileViewModel) {
         Row(
             modifier = Modifier
                 .width(440.dp)
-                .padding(top = 24.dp),
+                .padding(top = 24.dp)
+                .clickable {
+                    FirebaseAuth.getInstance().signOut()
+                    context.startActivity(Intent(context, MainActivity::class.java)) },
             horizontalArrangement = Arrangement.Start,
 
             ) {
@@ -489,6 +491,7 @@ fun ProfileScreen(vm: UserProfileViewModel) {
                 modifier = Modifier
                     .size(24.dp)
                     .padding(top = 4.dp)
+
             )
             Text(
                 text = "Log Out",
