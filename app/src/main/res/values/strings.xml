@@ -36,11 +36,12 @@
     <string name="channel">Channels</string>
     <string name="unread">Unread</string>
     <string name="about">About Apps</string>
-
-
     <string name="all">All</string>
     <string name="find">Find The Number ?</string>
-    <string name="add_contact">Add Contact</string>
+    <string name="Group_List">Group List</string>
+    <string name="Group_Make">Make A Group</string>
+    <string name="Save">Save</string>
+    <string name="LinkIMG">Link Image</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <!--    <string name="btn_login_title">Login</string>-->
 </resources>

@@ -51,45 +51,10 @@ class CamActivity : ComponentActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun uploadImageToStorage() {
-        val fstorage = Firebase.storage
-        val storageRef =fstorage.reference
-        val db = Firebase.firestore
-        val docRef = db.collection("images")
 
-        val imageFile = File(photoUri.path!!) // convert Uri to File
-        val imageRef = storageRef.child(imageFile.name)
-
-        val uploadTask = imageRef.putFile(photoUri)
-
-        uploadTask.addOnSuccessListener {
-            // Image upload successful
-            imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                val imageURL = downloadUri.toString()
-                val imageURLHash = hashMapOf(
-                    "imageURL" to imageURL
-                )
-                docRef.document()
-                    .set(imageURLHash)
-                    .addOnSuccessListener {
-                        Log.i("kilo", "URL Image uploaded: $imageURL")
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.e("kilo", "Error writing document", exception)
-                    }
-                Log.i("kilo", "Image uploaded: $imageURL")
-
-            }.addOnFailureListener { exception ->
-                Log.e("kilo", "Error getting image URL", exception)
-            }
-        }.addOnFailureListener { exception ->
-            // Image upload failed
-            Log.e("kilo", "Image upload failed: ${exception.message}", exception)
-        }
-    }
 
     private var shouldShowPhoto: MutableState<Boolean> = mutableStateOf(false)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -108,7 +73,6 @@ class CamActivity : ComponentActivity() {
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize()
                 )
-                uploadImageToStorage()
             }
         }
 

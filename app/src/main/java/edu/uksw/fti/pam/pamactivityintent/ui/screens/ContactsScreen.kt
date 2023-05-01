@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +52,7 @@ fun Navigation(){
 fun DetailScreen(nama: String?){
     Box( modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
-        ) {
+    ) {
         Text(text = "Hello, $nama")
     }
 
@@ -85,7 +86,7 @@ fun AddContact(navController: NavController){
                 .padding(top = 30.dp, bottom = 16.dp)
         ) {
             Text(
-                text = "Group List",
+                text = stringResource(R.string.Group_Make),
                 fontSize = 26.sp,
                 color = Color(0xff36a8eb),
                 fontWeight = FontWeight.Bold
@@ -130,7 +131,7 @@ fun AddContact(navController: NavController){
         OutlinedTextField(
             value = img,
             onValueChange = { img = it },
-            label = { Text(text = "Link Img")},
+            label = { Text(text = stringResource(R.string.LinkIMG)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -158,7 +159,7 @@ fun AddContact(navController: NavController){
         {
             // button text
             Text(
-                text = "Save",
+                text = stringResource(R.string.Save),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
@@ -193,7 +194,8 @@ fun ContactsScreen(navController: NavController) {
                 .wrapContentHeight()
                 .padding(top = 30.dp, bottom = 16.dp)
         ) {
-            Text(text = "Group List",
+            Text(
+                text = stringResource(R.string.Group_List),
                 fontSize = 26.sp,
                 color = Color(0xff36a8eb),
                 fontWeight = FontWeight.Bold
@@ -290,25 +292,21 @@ fun GroupListItem( contt: GroupsModel,navController: NavController) {
 
         ) {
 
-                contt.GroupName?.let {
-                    Text(
-                        text = it,
-                        fontSize = 18.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Normal )
-                }
-            
-            Text(
-                text = "Delete",
-                fontSize = 18.sp,
-                color = Color.Blue,
-                fontWeight = FontWeight.Normal,
+            contt.GroupName?.let {
+                Text(
+                    text = it,
+                    fontSize = 18.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Normal )
+            }
+
+            Icon(
+                Icons.Default.Delete,
+                contentDescription = "Delete",
                 modifier = Modifier
-
-                    .clickable { delVM.DeleteGroup(contt.GroupName!!,navController) }
-
-
-
+                    .size(18.dp)
+                    .clickable { delVM.DeleteGroup(contt.GroupName!!, navController) },
+                tint = Color.White
             )
 
 
@@ -329,4 +327,3 @@ fun GroupListItem( contt: GroupsModel,navController: NavController) {
 //        ContactsScreen()
 //    }
 //}
-

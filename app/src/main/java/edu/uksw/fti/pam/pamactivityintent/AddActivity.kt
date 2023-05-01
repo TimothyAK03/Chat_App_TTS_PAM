@@ -1,10 +1,16 @@
 package edu.uksw.fti.pam.pamactivityintent
 
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -16,70 +22,106 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import edu.uksw.fti.pam.pamactivityintent.ui.theme.PAMActivityIntentTheme
+import java.io.File
 import java.lang.reflect.Modifier
 
 
 class AddActivity : ComponentActivity() {
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContent {
+//            PAMActivityIntentTheme() {
+//                // A surface container using the 'background' color from the theme
+//                Surface(
+//                    modifier = androidx.compose.ui.Modifier.fillMaxSize()
+//                ) {
+//                    Add()
+//                }
+//            }
+//        }
+//    }
+
+    private lateinit var photoUri: Uri
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            // Do something with the selected image URI
+            setContent {
+                photoUri = it
+                if ( photoUri!= null) {
+                    Image(
+                        painter = rememberImagePainter(data = it),
+                        contentDescription = null,
+                    )
+                    Button(
+                        onClick = { uploadImageToStorage()},
+                    ) {
+                        Text("Upload Image")
+                    }
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun uploadImageToStorage() {
+        val fstorage = Firebase.storage
+        val storageRef =fstorage.reference
+        val db = Firebase.firestore
+        val docRef = db.collection("images")
+
+        val imageFile = File(photoUri.path!!) // convert Uri to File
+        val imageRef = storageRef.child(imageFile.name)
+
+        val uploadTask = imageRef.putFile(photoUri)
+
+        uploadTask.addOnSuccessListener {
+            // Image upload successful
+            imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                val imageURL = downloadUri.toString()
+                val imageURLHash = hashMapOf(
+                    "imageURL" to imageURL
+                )
+                docRef.document()
+                    .set(imageURLHash)
+                    .addOnSuccessListener {
+                        Log.i("kilo", "URL Image uploaded: $imageURL")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e("kilo", "Error writing document", exception)
+                    }
+                Log.i("kilo", "Image uploaded: $imageURL")
+
+            }.addOnFailureListener { exception ->
+                Log.e("kilo", "Error getting image URL", exception)
+            }
+        }.addOnFailureListener { exception ->
+            // Image upload failed
+            Log.e("kilo", "Image upload failed: ${exception.message}", exception)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             PAMActivityIntentTheme() {
                 // A surface container using the 'background' color from the theme
                 Surface(
+                    modifier = androidx.compose.ui.Modifier.fillMaxSize()
                 ) {
-                    AddScreen(onClickAction = ::addData)
+                    Button(onClick = { pickImage.launch("image/*") }) {
+                        Text("Select Image")
+                    }
                 }
             }
         }
     }
-
-    private fun addData(url: String, date: String) {
-        val fFirestore = Firebase.firestore
-
-        // Add a new document with a generated id.
-        val data = hashMapOf(
-            "date" to date,
-            "url" to url
-        )
-
-        fFirestore.collection("photo")
-            .add(data)
-            .addOnSuccessListener { documentReference ->
-                Toast.makeText(applicationContext, "Added data successfuly", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(applicationContext, "Failed add data", Toast.LENGTH_SHORT).show()
-            }
-    }
 }
 
 @Composable
-fun AddScreen( onClickAction: (String, String) -> Unit ) {
-    val lContext = LocalContext.current
-    var url by remember { mutableStateOf("") }
-    var date by remember { mutableStateOf("") }
+fun Add(onSubmitActionEvent: (photoUri: Uri) -> Unit) {
 
-    Column() {
-
-        TextField(
-            value = date,
-            onValueChange = { date = it },
-            label = { Text(text = "Date") },
-        )
-        TextField(
-            value = url,
-            onValueChange = { url = it },
-            label = { Text(text = "Link Photo") },
-        )
-    }
-
-    Button(
-        modifier = androidx.compose.ui.Modifier
-            .padding(top = 80.dp),
-        onClick = {
-            onClickAction(url, date)
-        }
-    ) {
-        Text(text = "SUBMIT")
-    }
 }

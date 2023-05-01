@@ -38,7 +38,10 @@
     <string name="unread">Belum Dibaca</string>
     <string name="all">Semua</string>
     <string name="find">Cari Nomor Telepon ?</string>
-    <string name="add_contact">Tambahkan Kontak</string>
+    <string name="Group_List">Daftar Group</string>
+    <string name="Group_Make">Buat Group</string>
+    <string name="Save">Simpan</string>
+    <string name="LinkIMG">Tautan Gambar</string>
     <string name="about">Tentang Apps</string>
     <!--    <string name="btn_login_title">Masuk</string>-->
 </resources>
