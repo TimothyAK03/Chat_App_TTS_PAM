@@ -73,6 +73,13 @@ fun NavigationGraph(
             FavGroup(vm = FavGroupViewModel(),navigateToProfile)
         }
 
+
+        composable(
+            route = ContactItems.FavGroup.route ,
+        ) {
+            FavGroup(vm = FavGroupViewModel(),navigateToProfile)
+        }
+
         composable(
             route = ProfileItems.UpdateScreen.route ,
         ) {

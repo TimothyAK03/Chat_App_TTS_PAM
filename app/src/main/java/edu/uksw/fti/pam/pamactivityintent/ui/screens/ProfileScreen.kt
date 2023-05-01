@@ -98,9 +98,6 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
         }
     )
 
-
-
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -113,7 +110,7 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
     ) {
         Box(
             modifier = Modifier
-                .padding(start = 15.dp, top = 10.dp, bottom = 10.dp)
+                .padding(start = 25.dp, top = 25.dp, bottom = 30.dp)
 
         ) {
             AsyncImage( // <--- foto kudu nganggo async image
@@ -123,9 +120,8 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
                 modifier = Modifier
                     .padding(top = 10.dp, start = 15.dp)
                     .clip(CircleShape)
-                    .size(120.dp)
+                    .size(100.dp)
             )
-
 
         }
 //            Row(
@@ -136,8 +132,8 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
 //            ) {
         Text(
             modifier = Modifier
-                .padding(start = 160.dp, top = 30.dp),
-            text = "Hallo ,  ",
+                .padding(start = 160.dp, top = 40.dp),
+            text = stringResource(R.string.hello),
             fontSize = 16.sp,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
@@ -146,7 +142,7 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
         vm.userProfile.firstName?.let {
             Text(
                 modifier = Modifier
-                    .padding(start = 215.dp, top = 30.dp),
+                    .padding(start = 215.dp, top = 40.dp),
                 text = it,
                 fontSize = 16.sp,
                 fontFamily = FontFamily.SansSerif,
@@ -156,13 +152,13 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
         }
         Text(
             modifier = Modifier
-                .padding(start = 255.dp, top = 30.dp),
+                .padding(start = 255.dp, top = 40.dp),
             text = " "
         )
         vm.userProfile.lastName?.let {
             Text(
                 modifier = Modifier
-                    .padding(start = 265.dp, top = 30.dp),
+                    .padding(start = 265.dp, top = 40.dp),
                 text = it,
                 fontSize = 16.sp,
                 fontFamily = FontFamily.SansSerif,
@@ -174,7 +170,7 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
 
         Row(
             modifier = Modifier
-                .padding(top = 99.dp, end = 10.dp)
+                .padding(top = 80.dp, end = 10.dp)
                 .width(400.dp),
             horizontalArrangement = Arrangement.End
         ) {
@@ -182,241 +178,212 @@ fun ProfileScreen(vm: UserProfileViewModel, navController: NavController) {
                 modifier = Modifier
                     .width(164.dp)
                     .height(44.dp)
-                    .padding(top = 8.dp, start = 6.dp, end = 10.dp),
+                    .padding(top = 8.dp, start = 0.dp, end = 25.dp),
                 colors = ButtonDefaults.buttonColors(Color.White),
                 onClick = { navController.navigate(ProfileItems.UpdateScreen.route) },
                 shape = RoundedCornerShape(8.dp)
             )
             {
                 Text(
-                    text = "Edit My Profil",
+                    text = stringResource(R.string.editmyprofile),
                     fontSize = 12.sp,
                     color = Color(0xff36a8eb),
                     fontWeight = FontWeight.Bold
                 )
             }
-            Icon(
-                painter = painterResource(R.drawable.baseline_mode_edit_24),
-                contentDescription = stringResource(id = R.string.share),
-                tint = Color.White,
-                modifier = Modifier
-                    .size(36.dp)
-                    .padding(top = 14.dp, end = 8.dp)
-            )
         }
     }
 
-    Column(
+    LazyColumn(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(start = 36.dp, top = 240.dp, end = 16.dp)
+            .padding(start = 36.dp, top = 220.dp, end = 16.dp)
     ) {
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-
-            modifier = Modifier
-                .padding(15.dp)
-                .fillMaxWidth()
-                .clickable { navController.navigate(ContactItems.FavGroup.route) }
-
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.favourites),
-                contentDescription = stringResource(id = R.string.favourites),
-                tint = Color.Black,
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .size(24.dp)
-                    .padding(top = 4.dp)
-            )
-            Text(
-                text = "Favourites",
-                modifier = Modifier.padding(start = 30.dp),
-                fontSize = 17.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-
+                    .padding(15.dp)
+                    .fillMaxWidth()
+                    .clickable { navController.navigate(ContactItems.FavGroup.route) }
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.favourites),
+                    contentDescription = stringResource(id = R.string.fav),
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(top = 4.dp)
                 )
-
+                Text(
+                    text = stringResource(R.string.fav),
+                    modifier = Modifier.padding(start = 30.dp),
+                    fontSize = 17.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
+                )
+            }
         }
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-
-            modifier = Modifier
-                .padding(15.dp)
-                .fillMaxWidth()
-                .clickable { navController.navigate(ProfileItems.Keep.route) }
-
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(15.dp)
+                    .fillMaxWidth()
+                    .clickable { navController.navigate(ProfileItems.Keep.route) }
             ) {
-            Icon(
-                painter = painterResource(R.drawable.downloads),
-                contentDescription = stringResource(id = R.string.downloads),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(top = 4.dp)
-            )
-            Text(
-                text = "Keep",
-                modifier = Modifier
-
-
-                    .padding(start = 30.dp),
-                fontSize = 17.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-            )
-
+                Icon(
+                    painter = painterResource(R.drawable.downloads),
+                    contentDescription = stringResource(id = R.string.keep),
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(top = 4.dp)
+                )
+                Text(
+                    text = stringResource(R.string.keep),
+                    modifier = Modifier.padding(start = 30.dp),
+                    fontSize = 17.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
+                )
+            }
         }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-
-            modifier = Modifier
-                .padding(15.dp)
-                .fillMaxWidth()
-                .clickable {
-                    lContext.startActivity(
-                        Intent(lContext, CamActivity::class.java)
-                    )
-                }
-
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(15.dp)
+                    .fillMaxWidth()
+                    .clickable {
+                        lContext.startActivity(
+                            Intent(lContext, CamActivity::class.java)
+                        )
+                    }
             ) {
-            Icon(
-                painter = painterResource(R.drawable.camera),
-                contentDescription = stringResource(id = R.string.camera),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(top = 4.dp)
-            )
-            Text(
-                text = "Camera",
-                modifier = Modifier
-                    .padding(start = 30.dp)
-                    ,
-                fontSize = 17.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-            )
-
+                Icon(
+                    painter = painterResource(R.drawable.camera),
+                    contentDescription = stringResource(id = R.string.camera),
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(top = 4.dp)
+                )
+                Text(
+                    text = stringResource(R.string.cam),
+                    modifier = Modifier.padding(start = 30.dp),
+                    fontSize = 17.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
+                )
+            }
         }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-
-            modifier = Modifier
-                .padding(15.dp)
-                .fillMaxWidth()
-                .clickable {  navController.navigate(ProfileItems.AboutUs.route) }
-
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(15.dp)
+                    .fillMaxWidth()
+                    .clickable {  navController.navigate(ProfileItems.AboutUs.route) }
             ) {
-            Icon(
-                painter = painterResource(R.drawable.baseline_apps_24),
-                contentDescription = stringResource(id = R.string.about),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(top = 4.dp)
-            )
-            Text(
-                text = "About App",
-                modifier = Modifier.padding(start = 30.dp),
-                fontSize = 17.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-            )
-
+                Icon(
+                    painter = painterResource(R.drawable.baseline_apps_24),
+                    contentDescription = stringResource(id = R.string.about),
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(top = 4.dp)
+                )
+                Text(
+                    text = stringResource(R.string.about),
+                    modifier = Modifier.padding(start = 30.dp),
+                    fontSize = 17.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
+                )
+            }
         }
-
-        Column(
-            modifier = Modifier
-                .width(350.dp)
-
-        ) {
+        item {
             Divider(
                 color = Color.Gray,
                 thickness = 1.dp,
                 modifier = Modifier
-                    .clip(shape = RoundedCornerShape(20.dp))
-            )
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-
-            modifier = Modifier
-                .padding(15.dp)
-                .fillMaxWidth()
-                .clickable {
-                    val user = Firebase.auth.currentUser!!
-                    user.delete()
-                    val fFirestore = Firebase.firestore
-                    fFirestore
-                        .collection("users")
-                        .document(user.uid)
-                        .delete()
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                context.startActivity(Intent(context, MainActivity::class.java))
-                            }
-
-                        }
-
-                }
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.accounts),
-                contentDescription = stringResource(id = R.string.accounts),
-                tint = Color.Black,
+                    .padding(15.dp)
+                    .fillMaxWidth()
+                    .clip(shape = RoundedCornerShape(20.dp)))}
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .size(24.dp)
-                    .padding(top = 4.dp)
-            )
-            Text(
-                text = "Delete Account",
-                modifier = Modifier.padding(start = 30.dp),
-                fontSize = 17.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-            )
-
+                    .padding(15.dp)
+                    .fillMaxWidth()
+                    .clickable {  val user = Firebase.auth.currentUser!!
+                        user.delete()
+                        val fFirestore = Firebase.firestore
+                        fFirestore
+                            .collection("users")
+                            .document(user.uid)
+                            .delete()
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful)
+                                {
+                                    context.startActivity(Intent(context, MainActivity::class.java))
+                                }
+                            }
+                        }
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.accounts),
+                    contentDescription = stringResource(id = R.string.accounts),
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(top = 4.dp)
+                )
+                Text(
+                    text = stringResource(R.string.del),
+                    modifier = Modifier.padding(start = 30.dp),
+                    fontSize = 17.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black
+                )
+            }
         }
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-
-            modifier = Modifier
-                .padding(15.dp)
-                .fillMaxWidth()
-                .clickable {
-                    FirebaseAuth
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(15.dp)
+                    .fillMaxWidth()
+                    .clickable {
+                        FirebaseAuth
                         .getInstance()
                         .signOut()
-                    context.startActivity(Intent(context, MainActivity::class.java))
-                }
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.logout),
-                contentDescription = stringResource(id = R.string.logout),
-                tint = Color.Black,
-                modifier = Modifier
-                    .size(24.dp)
-                    .padding(top = 4.dp)
-            )
-            Text(
-                text = "Log Out",
-                modifier = Modifier.padding(start = 30.dp),
-                fontSize = 17.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-            )
-
+                        context.startActivity(Intent(context, MainActivity::class.java))
+                            }
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.logout),
+                    contentDescription = stringResource(id = R.string.logout),
+                    tint = Color.Red,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(top = 4.dp)
+                )
+                Text(
+                    text = stringResource(R.string.logout),
+                    modifier = Modifier.padding(start = 30.dp),
+                    fontSize = 17.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Red
+                )
+            }
         }
 
 
@@ -528,7 +495,6 @@ fun updateScreen(navController: NavController, vm: UserProfileViewModel) {
             )
         }
 
-
         OutlinedTextField(
             value = img,
             onValueChange = { img = it },
@@ -540,7 +506,6 @@ fun updateScreen(navController: NavController, vm: UserProfileViewModel) {
                 unfocusedBorderColor = Color.Gray
             )
         )
-
 
         Button(
             modifier = Modifier
@@ -586,7 +551,7 @@ fun AboutUsScreen(vm : AboutUsViewModel){
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(start = 36.dp, end = 36.dp),
+            .padding(start = 36.dp, end = 36.dp, bottom = 56.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -646,7 +611,8 @@ fun AboutUsItem(about: AboutUsModel){
         color = Color(0xff2d8bc2),
         textAlign = TextAlign.Justify,
         modifier = Modifier
-            .padding(top = 10.dp)
+            .padding(top = 10.dp, bottom = 10.dp),
+        fontSize = 14.sp
     )
 
 }

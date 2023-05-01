@@ -163,7 +163,7 @@ fun SignUpScreen(
         {
             // button text
             Text(
-                text = "Sign Up",
+                text = stringResource(R.string.SignUp),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold

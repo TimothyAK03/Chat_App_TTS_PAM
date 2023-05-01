@@ -358,7 +358,7 @@ fun MessageBox(messageVM: MessageViewModel, chatt: GroupsModel) {
                 textState = ""
 
             })  {
-                Icon(imageVector = Icons.Default.Send, contentDescription = null)
+                Icon(imageVector = Icons.Default.Send, contentDescription = null, modifier = Modifier.padding(start = 3.dp))
             }
         }
     }

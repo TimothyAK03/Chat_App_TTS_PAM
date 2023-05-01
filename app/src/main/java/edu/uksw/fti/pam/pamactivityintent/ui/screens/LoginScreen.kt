@@ -132,7 +132,7 @@ fun LoginForm(
         )
         {
             Text(
-                text = "Sign In",
+                text = stringResource(R.string.SignIn),
                 fontSize = 20.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold
@@ -147,7 +147,7 @@ fun LoginForm(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Create an Account ?",
+                text = stringResource(R.string.CreateAcc),
                 color = Color.Gray,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,

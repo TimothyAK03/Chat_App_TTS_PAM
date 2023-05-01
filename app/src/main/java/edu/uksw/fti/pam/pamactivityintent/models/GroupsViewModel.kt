@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
 import kotlinx.coroutines.launch
@@ -18,16 +17,12 @@ import kotlinx.coroutines.launch
 class GroupsViewModel : ViewModel() {
     val user = Firebase.auth.currentUser
     private var _groupsModelList = mutableStateListOf<GroupsModel?>()
-    private var _CertainGroup by mutableStateOf(GroupsModel("","",""))
     private val db = Firebase.firestore
     private val docRef = db.collection("Group")
 
     var errorMessage: String by mutableStateOf("")
     val groupsModelList: SnapshotStateList<GroupsModel?>
         get() = _groupsModelList
-
-    val CertainGroup: GroupsModel
-        get() = _CertainGroup
 
     fun getContactList() {
         viewModelScope.launch{
@@ -50,56 +45,80 @@ class GroupsViewModel : ViewModel() {
             }
         }
     }
-
-    fun getCertainGroup(GroupName:String) {
-
-            try {
-                docRef.document(GroupName).get()
-                    .addOnSuccessListener { document ->
-                        if (document != null) {
-                            _CertainGroup = document.toObject<GroupsModel>()!!
-                        }
-                    }
-            }
-            catch(e: Exception) {
-                errorMessage = e.message!!
-            }
-
-    }
-
     fun UpdateGroup(Group: GroupsModel, navController: NavController, GroupName: String) {
 
         var img = "https://media-assets-ggwp.s3.ap-southeast-1.amazonaws.com/2020/10/Reverie-One-Piece--640x360.jpg"
 
-        if (Group.img == ""){
-            Group.img =  "https://media-assets-ggwp.s3.ap-southeast-1.amazonaws.com/2020/10/Reverie-One-Piece--640x360.jpg"
+        if (Group.img == "") {
+            Group.img =
+                "https://media-assets-ggwp.s3.ap-southeast-1.amazonaws.com/2020/10/Reverie-One-Piece--640x360.jpg"
             val fFirestore = Firebase.firestore
+
             fFirestore.collection("Group").document(GroupName)
                 .delete()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
 
-                .addOnCompleteListener {task->
-                    if(task.isSuccessful){
-                        fFirestore.collection("Group").document(GroupName)
-                        .set(Group)
+                        fFirestore.collection("chats_${GroupName}")
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                for (document in querySnapshot.documents) {
+                                    val data = document.data
+                                    if (data != null) {
+                                        fFirestore.collection("chats_${Group.GroupName!!}").document(document.id).set(data)
+                                        fFirestore.collection("chats_${GroupName}").document(document.id).delete()
+                                    }
+                                }
+                            }
+
+                        fFirestore.collection("FavGroup").document(GroupName)
+                            .get()
+                            .addOnSuccessListener { document ->
+                                if (document != null && document.exists()) {
+                                    fFirestore.collection("FavGroup").document(GroupName)
+                                        .delete()
+                                    fFirestore.collection("FavGroup").document(Group.GroupName!!)
+                                        .set(Group)
+
+                                }
+
+                            }
+                        fFirestore.collection("Group").document(Group.GroupName!!)
+                            .set(Group)
                         navController.navigate(BottomNavItems.Group.screen_route)
+
+
                     }
-
-
                 }
         }
         else{
             val fFirestore = Firebase.firestore
+
             fFirestore.collection("Group").document(GroupName)
                 .delete()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
 
-                .addOnCompleteListener {task->
-                    if(task.isSuccessful){
-                        fFirestore.collection("Group").document(GroupName)
+                        fFirestore.collection("FavGroup").document(GroupName)
+                            .get()
+                            .addOnSuccessListener { document ->
+                                if (document != null && document.exists()) {
+                                    fFirestore.collection("FavGroup").document(GroupName)
+                                        .delete()
+                                    fFirestore.collection("FavGroup").document(Group.GroupName!!)
+                                        .set(Group)
+                                    navController.navigate(BottomNavItems.Group.screen_route)
+                                } else {
+                                    navController.navigate(BottomNavItems.Group.screen_route)
+                                }
+
+                            }
+                        fFirestore.collection("Group").document(Group.GroupName!!)
                             .set(Group)
                         navController.navigate(BottomNavItems.Group.screen_route)
+
+
                     }
-
-
                 }
         }
 
@@ -139,7 +158,11 @@ class GroupsViewModel : ViewModel() {
 
     }
 
+
     fun DeleteGroup(GroupName : String, navController: NavController) {
+
+
+
 
 
         val fFirestore = Firebase.firestore

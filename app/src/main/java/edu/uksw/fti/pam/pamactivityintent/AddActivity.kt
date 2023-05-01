@@ -14,9 +14,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -43,7 +49,8 @@ class AddActivity : ComponentActivity() {
 //    }
 
     private lateinit var photoUri: Uri
-
+// button UUPLOAD IMAGE
+    // backgrond
     @RequiresApi(Build.VERSION_CODES.O)
     private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
@@ -57,8 +64,16 @@ class AddActivity : ComponentActivity() {
                     )
                     Button(
                         onClick = { uploadImageToStorage()},
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xff36a8eb)
+                        )
                     ) {
-                        Text("Upload Image")
+                        Text(
+                            text = stringResource(R.string.UploadIMG),
+                                    fontSize = 12.sp,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -106,20 +121,53 @@ class AddActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //SELECT IMAGE
         setContent {
             PAMActivityIntentTheme() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = androidx.compose.ui.Modifier.fillMaxSize()
-                ) {
-                    Button(onClick = { pickImage.launch("image/*") }) {
-                        Text("Select Image")
+                ) { Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                    Box(
+                        modifier = androidx.compose.ui.Modifier
+                            .padding(start = 0.dp, top = 8.dp),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        Box(
+                            modifier = androidx.compose.ui.Modifier
+                                .padding(start = 0.dp, top = 8.dp, bottom = 10.dp)
+                                .size(132.dp),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.selectimage),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                        Button(
+                            onClick = { pickImage.launch("image/*") },
+                            colors = ButtonDefaults.buttonColors
+                                (
+                                backgroundColor = Color(0xff36a8eb)
+                                )
+                            ){
+                                Text(text = stringResource(R.string.SelectIMG),
+                                fontSize = 12.sp,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold)
+                          }
+                        }
                     }
                 }
             }
         }
     }
-}
+
 
 @Composable
 fun Add(onSubmitActionEvent: (photoUri: Uri) -> Unit) {

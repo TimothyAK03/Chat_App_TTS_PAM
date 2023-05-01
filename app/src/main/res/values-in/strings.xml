@@ -7,14 +7,6 @@
     <string name="icon_dream">icon_dream</string>
     <string name="send">send</string>
     <string name="share">share</string>
-    <string name="favourites">favourites</string>
-    <string name="downloads">downloads</string>
-    <string name="logout">logout</string>
-    <string name="time">time</string>
-    <string name="subscribe">subscribe</string>
-    <string name="number">Nomor</string>
-    <string name="display">display</string>
-    <string name="location">location</string>
     <string name="accounts">accounts</string>
     <string name="languages">languages</string>
     <string name="arrow_rights">arrow_rights</string>
@@ -43,5 +35,18 @@
     <string name="Save">Simpan</string>
     <string name="LinkIMG">Tautan Gambar</string>
     <string name="about">Tentang Apps</string>
+    <string name="hello">"Hallo ,  "</string>
+    <string name="editmyprofile">"Ubah Profilku"</string>
+    <string name="fav">"Favorit"</string>
+    <string name="keep">"Simpanan"</string>
+    <string name="cam">"Kamera"</string>
+    <string name="del">"Hapus Akun"</string>
+    <string name="logout">Keluar</string>
+    <string name="UploadIMG">Unggah Gambar</string>\
+    <string name="SelectIMG">Pilih Gambar</string>
+    <string name="Add">Tambah Gambar</string>
+    <string name="SignIn">Masuk</string>
+    <string name="SignUp">Daftarkan Akun</string>
+    <string name="CreateAcc">Belum Punya Akun ?</string>
     <!--    <string name="btn_login_title">Masuk</string>-->
 </resources>

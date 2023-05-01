@@ -1,9 +1,7 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,11 +34,7 @@ import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.R
 import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
 import edu.uksw.fti.pam.pamactivityintent.models.GroupsViewModel
-import edu.uksw.fti.pam.pamactivityintent.models.UserProfile
-import edu.uksw.fti.pam.pamactivityintent.models.UserProfileViewModel
 import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
-import edu.uksw.fti.pam.pamactivityintent.ui.ProfileItems
-
 
 @Composable
 fun DetailScreen(navController: NavController, groupName: String?,groupDesc: String?, vm:GroupsViewModel){
@@ -158,11 +152,11 @@ fun AddContact(navController: NavController){
     val contactVM = remember { GroupsViewModel() }
 
 
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
             .padding(start = 36.dp, end = 36.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -189,7 +183,7 @@ fun AddContact(navController: NavController){
             contentAlignment = Alignment.TopCenter
         ) {
             Image(
-                painter = painterResource(id = R.drawable.iluskontak),
+                painter = painterResource(id = R.drawable.isikontak),
                 contentDescription = null
             )
         }
@@ -358,8 +352,7 @@ fun GroupListItem( contt: GroupsModel,navController: NavController) {
             .fillMaxHeight(0.3f)
             .size(60.dp)
             .background(Color(0xFF5BB8EE))
-            .clickable
-            {
+            .clickable {
                 navController.navigate(ContactItems.DetailScreen.withArgs(contt.GroupName!!, contt.GroupDescription!!))
             },
         horizontalArrangement = Arrangement.Start,
