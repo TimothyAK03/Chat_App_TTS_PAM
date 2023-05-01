@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,30 +31,119 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import edu.uksw.fti.pam.pamactivityintent.R
 import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
 import edu.uksw.fti.pam.pamactivityintent.models.GroupsViewModel
+import edu.uksw.fti.pam.pamactivityintent.models.UserProfile
+import edu.uksw.fti.pam.pamactivityintent.models.UserProfileViewModel
 import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
+import edu.uksw.fti.pam.pamactivityintent.ui.ProfileItems
 
-fun AddtoFstore(){
 
-}
 @Composable
-fun Navigation(){
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = ContactItems.ContactScreen.route) {
-        composable(route = ContactItems.ContactScreen.route){
+fun DetailScreen(navController: NavController, groupName: String?,groupDesc: String?, vm:GroupsViewModel){
+    val auth = Firebase.auth
+    val currentUser = auth.currentUser
 
-        }
+    val UpdateVM = remember { GroupsViewModel() }
+
+    val context = LocalContext.current
+
+
+
+
+    var GroupDescription by remember { mutableStateOf(groupDesc) }
+    var GroupName by remember { mutableStateOf(groupName) }
+    var img by remember { mutableStateOf("") }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 40.dp),
+        horizontalArrangement = Arrangement.Center
+    )
+    {
+        Text(
+            "Update Group",
+            fontFamily = androidx.compose.ui.text.font.FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xff36a8eb),
+            fontSize = 36.sp
+        )
     }
-}
 
-@Composable
-fun DetailScreen(nama: String?){
-    Box( modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 130.dp, start = 36.dp, end = 36.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(text = "Hello, $nama")
+        OutlinedTextField(
+            value = GroupName!!,
+            onValueChange = { GroupName = it },
+            label = { Text(text = stringResource(R.string.grupName)) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xff36a8eb),
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+        OutlinedTextField(
+            value = GroupDescription!!,
+            onValueChange = { GroupDescription = it },
+            label = { Text(text = stringResource(R.string.grupDesc)) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xff36a8eb),
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+
+        OutlinedTextField(
+            value = img!!,
+            onValueChange = { img = it },
+            label = { Text(text = stringResource(R.string.LinkIMG)) },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color(0xff36a8eb),
+                unfocusedBorderColor = Color.Gray
+            )
+        )
+
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 0.dp)
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(Color(0xff36a8eb)),
+            onClick = {
+                val Group = GroupsModel(
+
+                    GroupName = GroupName,
+                    GroupDescription = GroupDescription,
+                    img = img
+                )
+
+                UpdateVM.UpdateGroup(Group, navController, groupName!!)
+
+            }
+        )
+        {
+            // button text
+            Text(
+                text = "Update",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 
 }
@@ -268,7 +358,9 @@ fun GroupListItem( contt: GroupsModel,navController: NavController) {
             .fillMaxHeight(0.3f)
             .size(60.dp)
             .background(Color(0xFF5BB8EE))
-            .clickable {
+            .clickable
+            {
+                navController.navigate(ContactItems.DetailScreen.withArgs(contt.GroupName!!, contt.GroupDescription!!))
             },
         horizontalArrangement = Arrangement.Start,
     ) {

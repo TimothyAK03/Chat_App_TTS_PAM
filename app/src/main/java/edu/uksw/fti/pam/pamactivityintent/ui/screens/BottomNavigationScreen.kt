@@ -15,15 +15,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import edu.uksw.fti.pam.pamactivityintent.CamActivity
-import edu.uksw.fti.pam.pamactivityintent.models.AboutUsViewModel
-import edu.uksw.fti.pam.pamactivityintent.models.FavGroupViewModel
-import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
-import edu.uksw.fti.pam.pamactivityintent.models.UserProfileViewModel
+import edu.uksw.fti.pam.pamactivityintent.models.*
 import edu.uksw.fti.pam.pamactivityintent.ui.BottomNavItems
 import edu.uksw.fti.pam.pamactivityintent.ui.ContactItems
 import edu.uksw.fti.pam.pamactivityintent.ui.ProfileItems
@@ -53,6 +52,20 @@ fun NavigationGraph(
             route = ContactItems.AddScreen.route ,
         ) {
             AddContact(navController = navController)
+        }
+
+        composable(
+            route = ContactItems.DetailScreen.route + "/{GroupName}/{GroupDescription}",
+            arguments = listOf(
+                navArgument("GroupName"){
+                    type = NavType.StringType
+                },
+                navArgument("GroupDescription"){
+                    type = NavType.StringType
+                }
+            )
+        ) {entry ->
+            DetailScreen(navController = navController, groupName = entry.arguments?.getString("GroupName")!!, groupDesc = entry.arguments?.getString("GroupDescription")!!, vm = GroupsViewModel())
         }
         composable(
             route = ContactItems.FavGroup.route ,
