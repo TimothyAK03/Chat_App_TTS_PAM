@@ -109,7 +109,7 @@ class GroupsViewModel : ViewModel() {
     fun AddNewContact(Group: GroupsModel, navController: NavController) {
 
 
-      
+
 
         if (Group.img == ""){
             Group.img =  "https://media-assets-ggwp.s3.ap-southeast-1.amazonaws.com/2020/10/Reverie-One-Piece--640x360.jpg"

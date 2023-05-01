@@ -117,7 +117,7 @@ fun MessageTopBar(chatt: GroupsModel) {
                 Icon(
                     imageVector = Icons.Default.ThumbDown,
                     contentDescription = null,
-                    tint = Color(0xFF0397EC)
+                    tint = Color(0xFF003D60)
                 )
             }
             IconButton(onClick = {
@@ -142,7 +142,7 @@ fun MessageTopBar(chatt: GroupsModel) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = null,
-                    tint = Color(0xFF0397EC)
+                    tint = Color(0xFF003D60)
                 )
             }
         },
