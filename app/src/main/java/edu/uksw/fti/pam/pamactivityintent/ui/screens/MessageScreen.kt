@@ -221,7 +221,7 @@ fun MessageBubble(
     }
 
 
-    val bubbleWidth = 200.dp // Change this to the desired width of the bubble
+    val bubbleWidth = 200.dp
     val alignBubble: Alignment
     val colorBubble: Color
     val horizontalArrangement: Arrangement.Horizontal
@@ -276,13 +276,7 @@ fun MessageBubble(
                     alignment = Alignment.CenterStart
                 )
             }
-//            Divider(
-//                color = Color.Gray,
-//                thickness = 90.dp,
-//                modifier = Modifier
-//                    .fillMaxHeight()
-//                    .width(1.dp)
-//            )
+
             Column(
                 modifier = Modifier
                     .widthIn(max = bubbleWidth)
@@ -362,7 +356,6 @@ fun MessageBox(messageVM: MessageViewModel, chatt: GroupsModel) {
             }
         }
     }
-
 }
 
 

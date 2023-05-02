@@ -1,5 +1,7 @@
 package edu.uksw.fti.pam.pamactivityintent.ui.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,10 +24,18 @@ import coil.compose.rememberImagePainter
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import edu.uksw.fti.pam.pamactivityintent.models.GroupsModel
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.util.Date
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ChatListItem(chatt: GroupsModel, navigateToProfile: (GroupsModel) -> Unit){
-
+    val currentDate = Date()
+    val dateFormat = SimpleDateFormat("HH-mm", Locale.getDefault())
+    val formattedDate = dateFormat.format(currentDate)
 
     Card(modifier = Modifier
         .padding(10.dp, 6.dp)
@@ -91,7 +101,7 @@ fun ChatListItem(chatt: GroupsModel, navigateToProfile: (GroupsModel) -> Unit){
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("09.00", fontSize = 9.sp)
+                    Text(formattedDate.toString(), fontSize = 9.sp)
                     Icon(
                         painter = painterResource(edu.uksw.fti.pam.pamactivityintent.R.drawable.icon_read),
                         contentDescription = null,

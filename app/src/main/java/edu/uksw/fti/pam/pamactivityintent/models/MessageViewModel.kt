@@ -28,7 +28,7 @@ class MessageViewModel : ViewModel() {
 
     fun getUserFirstDocument(uid: String?, callback: (DocumentSnapshot?) -> Unit) {
         val docRef = db.collection("users").document(uid!!)
-        val source = Source.CACHE
+        val source = Source.SERVER
         docRef.get(source).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // Document found in the offline cache
