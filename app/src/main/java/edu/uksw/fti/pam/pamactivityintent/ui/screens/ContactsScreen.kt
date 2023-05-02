@@ -51,28 +51,52 @@ fun DetailScreen(navController: NavController, groupName: String?,groupDesc: Str
     var GroupDescription by remember { mutableStateOf(groupDesc) }
     var GroupName by remember { mutableStateOf(groupName) }
     var img by remember { mutableStateOf("") }
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
+            .padding(start = 36.dp, end = 36.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 40.dp),
+            .wrapContentHeight()
+            .padding(top = 30.dp, bottom = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     )
     {
         Text(
-            "Update Group",
+            text = stringResource(R.string.updategr),
             fontFamily = androidx.compose.ui.text.font.FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             color = Color(0xff36a8eb),
-            fontSize = 36.sp
+            fontSize = 26.sp
         )
     }
+        Box(
+            modifier = Modifier
+                .padding(start = 0.dp, top = 8.dp, bottom = 10.dp)
+                .size(132.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.updatepic),
+                contentDescription = null
+            )
+        }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 130.dp, start = 36.dp, end = 36.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(top = 130.dp, start = 36.dp, end = 36.dp),
+//        verticalArrangement = Arrangement.spacedBy(8.dp)
+//    ) {
         OutlinedTextField(
             value = GroupName!!,
             onValueChange = { GroupName = it },
@@ -132,7 +156,7 @@ fun DetailScreen(navController: NavController, groupName: String?,groupDesc: Str
         {
             // button text
             Text(
-                text = "Update",
+                text = stringResource(R.string.update),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
@@ -390,7 +414,9 @@ fun GroupListItem( contt: GroupsModel,navController: NavController) {
                 contentDescription = "Delete",
                 modifier = Modifier
                     .size(18.dp)
-                    .clickable { delVM.DeleteGroup(contt.GroupName!!, navController) },
+                    .clickable {
+                        delVM.DeleteGroup(contt.GroupName!!, navController)
+                               },
                 tint = Color.White
             )
 

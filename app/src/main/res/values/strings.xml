@@ -36,6 +36,7 @@
     <string name="LinkIMG">Link Image</string>
     <string name="hello">"Hello ,  "</string>
     <string name="editmyprofile">"Edit My Profile"</string>
+    <string name="Ubah">"Change"</string>
     <string name="fav">"Favourites"</string>
     <string name="keep">"Keep"</string>
     <string name="cam">"Camera"</string>
@@ -47,6 +48,10 @@
     <string name="SignIn">Sign In</string>
     <string name="CreateAcc">Create An Account ?</string>
     <string name="SignUp">Sign Up</string>
+    <string name="updategr">Update Group</string>
+    <string name="update">Update</string>
+
+
     <string name="title_activity_profile">ProfileActivity</string>
     <!--    <string name="btn_login_title">Login</string>-->
 </resources>

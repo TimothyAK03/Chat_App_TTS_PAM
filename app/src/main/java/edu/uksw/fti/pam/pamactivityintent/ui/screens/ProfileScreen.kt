@@ -438,29 +438,42 @@ fun updateScreen(navController: NavController, vm: UserProfileViewModel) {
         block = {
             vm.getLoggedInUserProfile()
         }
+
     )
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 40.dp),
-        horizontalArrangement = Arrangement.Center
-    )
-    {
-        Text(
-            "Update Profile User",
-            fontFamily = androidx.compose.ui.text.font.FontFamily.SansSerif,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xff36a8eb),
-            fontSize = 36.sp
-        )
-    }
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 130.dp, start = 36.dp, end = 36.dp),
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
+            .padding(start = 36.dp, end = 36.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 30.dp, bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        )
+        {
+            Text(
+                text = stringResource(R.string.editmyprofile),
+                fontFamily = androidx.compose.ui.text.font.FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xff36a8eb),
+                fontSize = 26.sp
+            )
+        }
+
+
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(top = 130.dp, start = 36.dp, end = 36.dp),
+//        verticalArrangement = Arrangement.spacedBy(8.dp)
+//    ) {
         Row(
             modifier = Modifier
                 .padding(start = 0.dp, top = 0.dp),
@@ -528,10 +541,21 @@ fun updateScreen(navController: NavController, vm: UserProfileViewModel) {
         {
             // button text
             Text(
-                text = "Update",
+                text = stringResource(R.string.Ubah),
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
+            )
+        }
+        Box(
+            modifier = Modifier
+                .padding(start = 6.dp, top = 88.dp)
+                .size(262.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.updatepicpro),
+                contentDescription = null
             )
         }
     }

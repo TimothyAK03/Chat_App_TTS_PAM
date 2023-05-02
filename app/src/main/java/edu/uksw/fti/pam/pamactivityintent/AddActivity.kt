@@ -62,19 +62,28 @@ class AddActivity : ComponentActivity() {
                         painter = rememberImagePainter(data = it),
                         contentDescription = null,
                     )
-                    Button(
-                        onClick = { uploadImageToStorage()},
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color(0xff36a8eb)
-                        )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom, // updated property
+                        modifier = androidx.compose.ui.Modifier
+                            .padding(start = 126.dp, bottom = 100.dp)
+                            .fillMaxHeight() // added property
                     ) {
-                        Text(
-                            text = stringResource(R.string.UploadIMG),
-                                    fontSize = 12.sp,
+                        Button(
+                            onClick = { uploadImageToStorage() },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(0xff36a8eb)
+                            )
+                        ) {
+                            Text(
+                                text = stringResource(R.string.UploadIMG),
+                                fontSize = 12.sp,
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold
-                        )
+                            )
+                        }
                     }
+
                 }
             }
         }

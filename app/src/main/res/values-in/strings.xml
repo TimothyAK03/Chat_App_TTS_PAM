@@ -37,6 +37,7 @@
     <string name="about">Tentang Apps</string>
     <string name="hello">"Hallo ,  "</string>
     <string name="editmyprofile">"Ubah Profilku"</string>
+    <string name="Ubah">"Mengubah"</string>
     <string name="fav">"Favorit"</string>
     <string name="keep">"Simpanan"</string>
     <string name="cam">"Kamera"</string>
@@ -47,6 +48,9 @@
     <string name="Add">Tambah Gambar</string>
     <string name="SignIn">Masuk</string>
     <string name="SignUp">Daftarkan Akun</string>
+    <string name="updategr">Perbarui Grup</string>
+    <string name="update">Perbarui</string>
     <string name="CreateAcc">Belum Punya Akun ?</string>
+
     <!--    <string name="btn_login_title">Masuk</string>-->
 </resources>
